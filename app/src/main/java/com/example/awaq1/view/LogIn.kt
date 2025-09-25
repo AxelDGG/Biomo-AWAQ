@@ -25,11 +25,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.auth0.android.Auth0
@@ -45,6 +51,7 @@ fun LogIn(
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var viewpassword by remember { mutableStateOf(false)}
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -83,7 +90,20 @@ fun LogIn(
                 value = password,
                 onValueChange = {password = it },
                 label = { Text("Contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if(viewpassword) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val image = if (viewpassword)
+                        Icons.Filled.VisibilityOff
+                    else
+                        Icons.Filled.Visibility
+
+                    Icon(
+                        imageVector = image,
+                        contentDescription = if (viewpassword) "Ocultar contraseña" else "Mostrar contraseña",
+                        modifier = Modifier.clickable { viewpassword = !viewpassword }
+                    )
+
+                               },
                 singleLine = true,
                 keyboardActions = KeyboardActions(onDone = {
                     loginWithUsernamePassword(auth0, username, password, onLoginSuccess, onError = { message ->
