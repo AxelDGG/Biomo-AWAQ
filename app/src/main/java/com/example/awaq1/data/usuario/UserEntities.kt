@@ -24,6 +24,8 @@ data class UsuarioEntity(
     val username: String,
     val lastAccess: String,  // Assuming datetime as String for simplicity
     val lastLogin: String,
+    val passwordHash: String,
+
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0

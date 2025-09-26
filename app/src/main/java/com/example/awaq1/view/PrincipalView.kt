@@ -42,7 +42,7 @@ import java.time.LocalDateTime
 
 // Sets global (MainActivity) field accoundInfo, from a username
 @SuppressLint("NewApi")
-suspend fun setAccountInfoOnLogin(context: MainActivity, username: String) {
+suspend fun setAccountInfoOnLogin(context: MainActivity, username: String, password: String) {
     val usuariosRepository = context.container.usuariosRepository
 
     // Get user's ID in database, or create its entry if not found
@@ -51,7 +51,9 @@ suspend fun setAccountInfoOnLogin(context: MainActivity, username: String) {
             UsuarioEntity(
                 username = username,
                 lastAccess = LocalDateTime.now().toString(),
-                lastLogin = LocalDateTime.now().toString()
+                lastLogin = LocalDateTime.now().toString(),
+                // se le agrego la contraseña sin hasheo a la tabla para un inicio de sesion sin conexion
+                passwordHash = password
             )
         )
     context.accountInfo = AccountInfo(username, userId)
@@ -77,7 +79,7 @@ fun PrincipalView(modifier: Modifier = Modifier, auth0: Auth0) {
             LogIn(
                 auth0 = auth0,
                 onLoginSuccess =  { cred, user ->
-                    runBlocking { setAccountInfoOnLogin(context, user) }
+                    runBlocking { setAccountInfoOnLogin(context, user, cred.toString()) }
                     credentials = cred
                     loggedIn = true
                 },
