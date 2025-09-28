@@ -22,6 +22,7 @@ import com.example.awaq1.view.ObservationListScreen
 import com.example.awaq1.view.SelectFormularioScreen
 import com.example.awaq1.view.Settings
 import com.example.awaq1.view.TwoFactor
+import com.example.awaq1.view.Busqueda
 import kotlinx.serialization.Serializable
 
 @Serializable data class FormUnoID(val form_id: Long = 0)
@@ -60,6 +61,9 @@ fun AppNavigator(onLogout: () -> Unit, modifier: Modifier = Modifier) {
         }
         composable("perfil") {
             UserSettingsScreen(navController = navController)
+        }
+        composable("busqueda"){
+            Busqueda(navController = navController)
         }
 
         composable("elegir_reporte") {
