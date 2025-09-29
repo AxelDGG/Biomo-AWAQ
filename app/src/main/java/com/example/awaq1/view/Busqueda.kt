@@ -68,6 +68,7 @@ import com.example.awaq1.navigator.FormUnoID
 fun Busqueda(navController: NavController) {
     val context = LocalContext.current as MainActivity
     val appContainer = context.container
+    var botonSeleccionado by remember { mutableStateOf(Tab.todos) }
 
     val forms1: List<FormularioUnoEntity> by appContainer.usuariosRepository.getAllFormularioUnoForUserID(
         context.accountInfo.user_id
@@ -100,8 +101,6 @@ fun Busqueda(navController: NavController) {
     val count by appContainer.formulariosRepository.getAllFormulariosCount()
         .collectAsState(initial = 0)
 
-
-    var botonSeleccionado by remember { mutableStateOf(Tab.todos) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -131,7 +130,7 @@ fun Busqueda(navController: NavController) {
             ) {
                 Row(modifier = Modifier.padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically){
                     TextButton(
-                        onClick = { /* navController.navigate("Busqueda") */
+                        onClick = {
                         botonSeleccionado = Tab.todos},
                         modifier = Modifier.weight(1f)) {
                         Text(
@@ -143,11 +142,11 @@ fun Busqueda(navController: NavController) {
                         )
                     }
                     TextButton(
-                        onClick = { /* navController.navigate("Guardados") */
+                        onClick = {
                         botonSeleccionado = Tab.guardados},
                         modifier = Modifier.weight(1.3f)) {
                         Text(
-                            text = "Guardados",
+                            text = "Incompletos",
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
@@ -156,11 +155,11 @@ fun Busqueda(navController: NavController) {
 
                     }
                     TextButton(
-                        onClick = { /* navController.navigate("Subidos") */
+                        onClick = {
                             botonSeleccionado = Tab.subidos},
                         modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Subidos",
+                            text = "Completos",
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
@@ -168,52 +167,163 @@ fun Busqueda(navController: NavController) {
                         )
                     }
                 }
-                // Forms Grid
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(1),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    reverseLayout = true,
-                    modifier = Modifier
-                        .padding(horizontal = 0.dp, vertical = 8.dp)
-                        .fillMaxWidth()
-                ) {
-                    items(count = 1) {
-                        Spacer(modifier = Modifier.height(10.dp))
+                when(botonSeleccionado){
+                    Tab.todos -> {
+                        // Forms Grid
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(1),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            reverseLayout = true,
+                            modifier = Modifier
+                                .padding(horizontal = 0.dp, vertical = 8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            items(count = 1) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                            items(forms1) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms2) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                            }
+                            items(forms3) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms4) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms5) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms6) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms7) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                        }
                     }
-                    items(forms1) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
+                    Tab.guardados -> {
+                        // Forms Grid
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(1),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            reverseLayout = true,
+                            modifier = Modifier
+                                .padding(horizontal = 0.dp, vertical = 8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            items(count = 1) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                            items(forms1.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms2.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                            }
+                            items(forms3.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms4.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms5.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms6.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms7.filter { it.esCompleto() != true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                        }
+                        Text("Guardados, no sé como filtrarlos")
                     }
-                    items(forms2) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
-                    }
-                    items(forms3) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
-                    }
-                    items(forms4) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
-                    }
-                    items(forms5) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
-                    }
-                    items(forms6) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
-                    }
-                    items(forms7) { form ->
-                        val formCard = FormInformation(form)
-                        formCard.verCard(navController)
-                    }
+                    Tab.subidos -> {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(1),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            reverseLayout = true,
+                            modifier = Modifier
+                                .padding(horizontal = 0.dp, vertical = 8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            items(count = 1) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                            items(forms1.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms2.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                            }
+                            items(forms3.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms4.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms5.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms6.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                            items(forms7.filter { it.esCompleto() == true }) { form ->
+                                val formCard = FormInformation(form)
+                                formCard.verCard(navController)
+                                form.esCompleto()
+                            }
+                        }
+                        Text("Subidos")
                     }
                 }
             }
         }
     }
+}
 
 enum class Tab{
     todos, guardados, subidos
