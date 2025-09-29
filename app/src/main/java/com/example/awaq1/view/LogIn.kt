@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -101,9 +102,8 @@ fun LogIn(
                         imageVector = image,
                         contentDescription = if (viewpassword) "Ocultar contraseña" else "Mostrar contraseña",
                         modifier = Modifier.clickable { viewpassword = !viewpassword }
-                    )
+                    ) },
 
-                               },
                 singleLine = true,
                 keyboardActions = KeyboardActions(onDone = {
                     loginWithUsernamePassword(auth0, username, password, onLoginSuccess, onError = { message ->
@@ -131,7 +131,7 @@ fun LogIn(
             },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 170.dp),
+                    .padding(top = 170.dp).width(160.dp).height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4E7029), // Example: Dodger Blue
                     contentColor = Color(0xFFFFFFFF) // Example: White text
