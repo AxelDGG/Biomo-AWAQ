@@ -161,11 +161,11 @@ fun Home(navController: NavController) {
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "Dashboard",
+                        text = "Tablero",
                         fontSize = 35.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp).align(Alignment.CenterHorizontally)
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))
