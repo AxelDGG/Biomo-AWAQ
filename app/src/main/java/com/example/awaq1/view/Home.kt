@@ -60,6 +60,9 @@ import com.example.awaq1.navigator.FormSieteID
 import com.example.awaq1.navigator.FormTresID
 import com.example.awaq1.navigator.FormUnoID
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+
 
 @Composable
 fun Home(navController: NavController) {
@@ -119,7 +122,7 @@ fun Home(navController: NavController) {
     Scaffold(
         bottomBar = {
             Column() {
-                BottomNavigationBar(navController)
+                BottomNavigationBar(navController) // agregar una top bar de ser posible para poner el perfil
             }
         },
         content = { paddingValues ->
@@ -138,18 +141,24 @@ fun Home(navController: NavController) {
                         .background(Color(0xFFCDE4B4)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.Center) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         var fontSize by remember { mutableStateOf(50.sp) }
 
                         Text(
-                            text = "Hola, $nombre!",
+                            text = "Hola",
                             fontSize = fontSize,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF4E7029),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-
-
+                        )
+                        Text(
+                            text = "$nombre!",
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF4E7029),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -161,11 +170,11 @@ fun Home(navController: NavController) {
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "Dashboard",
+                        text = "Tablero",
                         fontSize = 35.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp).align(Alignment.CenterHorizontally)
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))
@@ -379,11 +388,13 @@ data class FormInfo(
 
             ) {
                 Column {
+
                     Text(
                         text = "$tipo: $valorIdentificador",
                         fontSize = 25.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
+
                     )
 
                     Row {
@@ -408,14 +419,14 @@ data class FormInfo(
                 Column {
                     Text(
                         text = "$primerTag: $primerContenido",
-                        fontSize = 25.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Normal,
                         color = Color.Black
                     )
 
                     Text(
                         text = "$segundoTag: $segundoContenido",
-                        fontSize = 25.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Normal,
                         color = Color.Black
                     )

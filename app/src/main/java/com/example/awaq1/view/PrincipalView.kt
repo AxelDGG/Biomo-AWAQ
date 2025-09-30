@@ -50,6 +50,8 @@ import java.time.LocalDateTime
 @SuppressLint("NewApi")
 suspend fun setAccountInfoOnLogin(context: MainActivity, username: String) {
     val usuariosRepository = context.container.usuariosRepository
+
+    // Get user's ID in database, or create its entry if not found
     val userId: Long = usuariosRepository.getUserIdByUsername(username)
         ?: usuariosRepository.insertUser(
             UsuarioEntity(
@@ -104,8 +106,7 @@ fun PrincipalView(modifier: Modifier = Modifier, auth0: Auth0) {
                     }
                     credentials = null
                 },
-                Modifier.padding(innerPadding)
-            )
+                Modifier.padding(innerPadding))
         } else {
             LogIn(
                 auth0 = auth0,
