@@ -46,7 +46,7 @@ import com.example.awaq1.R
 @Composable
 fun LogIn(
     auth0: Auth0,
-    onLoginSuccess: (Credentials, String) -> Unit,
+    onLoginSuccess: (Credentials, String,Password: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var username by remember { mutableStateOf("") }
@@ -125,7 +125,9 @@ fun LogIn(
             )
             //Entrar
             Button(onClick = {
-                loginWithUsernamePassword(auth0, username, password, onLoginSuccess, onError = { message ->
+                loginWithUsernamePassword(auth0, username, password, onSuccess = {cred, retunredUser, returnedPassword ->
+                    onLoginSuccess(cred, retunredUser, returnedPassword)
+                }, onError = { message ->
                     errorMessage = message // Actualiza el mensaje de error si ocurre un problema
                 })
             },

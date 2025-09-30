@@ -25,7 +25,7 @@ data class UsuarioEntity(
     val lastAccess: String,  // Assuming datetime as String for simplicity
     val lastLogin: String,
     val passwordHash: String, // Contraseña encriptada
-    val salt: String // Sal para la contraseña
+    //val salt: String // Sal para la contraseña
 
 ) {
     @PrimaryKey(autoGenerate = true)

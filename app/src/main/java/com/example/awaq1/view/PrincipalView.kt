@@ -78,8 +78,8 @@ fun PrincipalView(modifier: Modifier = Modifier, auth0: Auth0) {
         } else {
             LogIn(
                 auth0 = auth0,
-                onLoginSuccess =  { cred, user ->
-                    runBlocking { setAccountInfoOnLogin(context, user, cred.toString()) }
+                onLoginSuccess =  { cred, user, pass ->
+                    runBlocking { setAccountInfoOnLogin(context, user, pass) }
                     credentials = cred
                     loggedIn = true
                 },
@@ -100,7 +100,7 @@ fun PrincipalView(modifier: Modifier = Modifier, auth0: Auth0) {
 @Composable
 fun LoginScreen(
     auth0: Auth0,
-    onLoginSuccess: (Credentials, String) -> Unit,
+    onLoginSuccess: (Credentials, String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var username by remember { mutableStateOf("") }
@@ -136,7 +136,9 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                loginWithUsernamePassword(auth0, username, password, onLoginSuccess, onError = { message ->
+                loginWithUsernamePassword(auth0, username, password, { cred, returnedUser, returnetPassword ->
+                    onLoginSuccess(cred, returnedUser, returnetPassword)}
+                    , onError = { message ->
                     errorMessage = message // Actualiza el mensaje de error si ocurre un problema
                 })
             },
@@ -157,7 +159,7 @@ fun loginWithUsernamePassword(
     auth0: Auth0,
     username: String,
     password: String,
-    onSuccess: (Credentials, String) -> Unit,
+    onSuccess: (Credentials, String, String) -> Unit,
     onError: (String) -> Unit
 ) {
 
@@ -170,7 +172,7 @@ fun loginWithUsernamePassword(
         .start(object : Callback<Credentials, AuthenticationException> {
             override fun onSuccess(result: Credentials) {
                 Log.d("AuthSuccess", "Autenticado como \"${username}\" exitosamente")
-                onSuccess(result, username)
+                onSuccess(result, username, password)
             }
 
             override fun onFailure(error: AuthenticationException) {

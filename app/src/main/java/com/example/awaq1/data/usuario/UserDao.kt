@@ -48,12 +48,15 @@ interface UsuarioDAO {
     @Query("UPDATE Usuarios SET passwordHash = :passwordHash WHERE id = :userId")
     suspend fun updatePassword(userId: Long, passwordHash: String)
 
+    /*
     @Query("UPDATE Usuarios SET salt = :salt WHERE id = :userId")
     suspend fun updateSalt(userId: Long, salt: String)
 
-    // Funcion para obtener la contraseña y el salt de la tabla
-    @Query("SELECT passwordHash, salt FROM Usuarios WHERE username = :username")
-    suspend fun getUserCredentials(username: String): Pair<String, String>?
+     */
+
+    //Funcion para obtener la contraseña y el salt de la tabla
+    @Query("SELECT passwordHash FROM Usuarios WHERE username = :username")
+    suspend fun getUserCredentials(username: String): String
 
 }
 
