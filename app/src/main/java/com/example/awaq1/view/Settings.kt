@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -150,7 +152,9 @@ fun BottomNavigationBar(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp) // Spacer at the bottom of the navbar
+            //.padding(bottom = 16.dp) // Spacer at the bottom of the navbar
+            //.clip(RoundedCornerShape(bottomStart = 2000.dp, bottomEnd = 2000.dp))
+            .background(Color(0xFFCDE4B4))
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceAround, // Space items evenly across the row
@@ -171,23 +175,18 @@ fun BottomNavigationBar(navController: NavController) {
                 }
             )
 
-            // Add (Reporte) Button - Centered
-            IconButton(
+
+            // Add (busqueda) Button - Centered
+            NavigationButton(
+                label = "Busqueda",
+                icon = Icons.Default.Search,
+                isActive = currentRoute == "busqueda",
                 onClick = {
-                    navController.navigate("elegir_reporte") {
-                        popUpTo("home") { inclusive = false }
+                    navController.navigate("busqueda") {
+                        popUpTo("busqueda") { inclusive = false }
                     }
-                },
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Color(0xFF4CAF50), CircleShape) // Green background circle
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Reporte",
-                    tint = Color.White
-                )
-            }
+                }
+            )
 
             // Settings Icon Button
             NavigationButton(
@@ -210,7 +209,17 @@ fun NavigationButton(label: String, icon: androidx.compose.ui.graphics.vector.Im
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IconButton(onClick = onClick) {
+        IconButton(
+            onClick = onClick,
+
+            // Se le agregara un fondo de color blanco si el boton esta activo
+            modifier = if (isActive) {
+                Modifier
+                    .background(color = Color.White, shape = CircleShape)}
+                    else{
+                        Modifier
+                }
+        ) {
             Icon(
                 imageVector = icon,
                 contentDescription = label,
