@@ -1,0 +1,144 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f85c497fe2a46126d3b84520b38575ad",
+    "entities": [
+      {
+        "tableName": "Formulario1",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transecto` TEXT NOT NULL, `tipoAnimal` TEXT NOT NULL, `nombreComun` TEXT NOT NULL, `nombreCientifico` TEXT NOT NULL, `numeroIndividuos` TEXT NOT NULL, `tipoObservacion` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "transecto",
+            "columnName": "transecto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoAnimal",
+            "columnName": "tipoAnimal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComun",
+            "columnName": "nombreComun",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCientifico",
+            "columnName": "nombreCientifico",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroIndividuos",
+            "columnName": "numeroIndividuos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoObservacion",
+            "columnName": "tipoObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario2",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`zona` TEXT NOT NULL, `tipoAnimal` TEXT NOT NULL, `nombreComun` TEXT NOT NULL, `nombreCientifico` TEXT NOT NULL, `numeroIndividuos` TEXT NOT NULL, `tipoObservacion` TEXT NOT NULL, `alturaObservacion` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "zona",
+            "columnName": "zona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoAnimal",
+            "columnName": "tipoAnimal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComun",
+            "columnName": "nombreComun",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCientifico",
+            "columnName": "nombreCientifico",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroIndividuos",
+            "columnName": "numeroIndividuos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoObservacion",
+            "columnName": "tipoObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alturaObservacion",
+            "columnName": "alturaObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f85c497fe2a46126d3b84520b38575ad')"
+    ]
+  }
+}

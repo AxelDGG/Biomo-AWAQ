@@ -3,7 +3,6 @@ package com.example.awaq1.view
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,16 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,8 +37,6 @@ import com.example.awaq1.data.AccountInfo
 import com.example.awaq1.data.usuario.UsuarioEntity
 import com.example.awaq1.navigator.AppNavigator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
@@ -65,61 +59,38 @@ suspend fun setAccountInfoOnLogin(context: MainActivity, username: String) {
 
 @Composable
 fun PrincipalView(modifier: Modifier = Modifier, auth0: Auth0) {
-    // MODIFIED: State variables
+    var loggedIn by remember { mutableStateOf(false) }
     var credentials by remember { mutableStateOf<Credentials?>(null) }
-    var sessionChecked by remember { mutableStateOf(false) } // NEW: To track if we've checked for a saved session
     val context = LocalContext.current as MainActivity
-    val coroutineScope = rememberCoroutineScope() // NEW: Scope for launching suspend functions from Composables
-
-    // NEW: This effect runs once when the view is first composed to check for a saved session
-    LaunchedEffect(key1 = Unit) {
-        val savedData = context.sessionManager.credentialsFlow.firstOrNull()
-        if (savedData != null) { // Removed isExpired() check
-            val (savedCredentials, savedUsername) = savedData
-            Log.d("SessionCheck", "Found valid session for user: $savedUsername")
-            // A valid session was found, so we log the user in automatically
-            setAccountInfoOnLogin(context, savedUsername)
-            credentials = savedCredentials
-        } else {
-            Log.d("SessionCheck", "No valid session found.")
-        }
-        // Mark the session check as complete
-        sessionChecked = true
-    }
 
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
-        if (!sessionChecked) {
-            // NEW: Show a loading screen while we check for a session
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else if (credentials != null) {
-            // MODIFIED: We now check if 'credentials' is not null instead of a separate 'loggedIn' boolean
+        //context.accountInfo = AccountInfo("example@example.com", user_id = 1L)
+        if (loggedIn) { // loggedIn o true
             AppNavigator(
                 onLogout = {
                     Log.d("AuthLogout", "Logging out!")
-                    coroutineScope.launch { // NEW: Use coroutine scope
-                        context.sessionManager.clearCredentials()
-                    }
                     credentials = null
+                    loggedIn = false
                 },
                 Modifier.padding(innerPadding))
         } else {
             LogIn(
                 auth0 = auth0,
-                onLoginSuccess = { newCredentials, username ->
-                    coroutineScope.launch(Dispatchers.Main) {
-                        // These suspend functions will run within the coroutine
-                        context.sessionManager.saveCredentials(newCredentials, username)
-                        setAccountInfoOnLogin(context, username)
-                        credentials = newCredentials
-                    }
+                onLoginSuccess =  { cred, user ->
+                    runBlocking { setAccountInfoOnLogin(context, user) }
+                    credentials = cred
+                    loggedIn = true
                 },
                 modifier = Modifier.padding(innerPadding)
             )
+//            LoginScreen(
+//                auth0 = auth0,
+//                onLoginSuccess = {
+//                    credentials = it
+//                    loggedIn = true
+//                },
+//                modifier = Modifier.padding(innerPadding)
+//            )
         }
     }
 }

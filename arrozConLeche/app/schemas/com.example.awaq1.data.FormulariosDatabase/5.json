@@ -1,0 +1,1192 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 5,
+    "identityHash": "3fb8b9c252b9dc270276fc08bfbf5846",
+    "entities": [
+      {
+        "tableName": "Formulario1",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transecto` TEXT NOT NULL, `clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `tipoAnimal` TEXT NOT NULL, `nombreComun` TEXT NOT NULL, `nombreCientifico` TEXT NOT NULL, `numeroIndividuos` TEXT NOT NULL, `tipoObservacion` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "transecto",
+            "columnName": "transecto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoAnimal",
+            "columnName": "tipoAnimal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComun",
+            "columnName": "nombreComun",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCientifico",
+            "columnName": "nombreCientifico",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroIndividuos",
+            "columnName": "numeroIndividuos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoObservacion",
+            "columnName": "tipoObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario2",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`zona` TEXT NOT NULL, `clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `tipoAnimal` TEXT NOT NULL, `nombreComun` TEXT NOT NULL, `nombreCientifico` TEXT NOT NULL, `numeroIndividuos` TEXT NOT NULL, `tipoObservacion` TEXT NOT NULL, `alturaObservacion` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "zona",
+            "columnName": "zona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoAnimal",
+            "columnName": "tipoAnimal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComun",
+            "columnName": "nombreComun",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCientifico",
+            "columnName": "nombreCientifico",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroIndividuos",
+            "columnName": "numeroIndividuos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoObservacion",
+            "columnName": "tipoObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alturaObservacion",
+            "columnName": "alturaObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario3",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` TEXT NOT NULL, `clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `seguimiento` INTEGER NOT NULL, `cambio` INTEGER NOT NULL, `cobertura` TEXT NOT NULL, `tipoCultivo` TEXT NOT NULL, `disturbio` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seguimiento",
+            "columnName": "seguimiento",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cambio",
+            "columnName": "cambio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cobertura",
+            "columnName": "cobertura",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoCultivo",
+            "columnName": "tipoCultivo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "disturbio",
+            "columnName": "disturbio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario4",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` TEXT NOT NULL, `clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `quad_a` TEXT NOT NULL, `quad_b` TEXT NOT NULL, `sub_quad` TEXT NOT NULL, `habitoDeCrecimiento` TEXT NOT NULL, `nombreComun` TEXT NOT NULL, `nombreCientifico` TEXT NOT NULL, `placa` TEXT NOT NULL, `circunferencia` TEXT NOT NULL, `distancia` TEXT NOT NULL, `estatura` TEXT NOT NULL, `altura` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quad_a",
+            "columnName": "quad_a",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quad_b",
+            "columnName": "quad_b",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sub_quad",
+            "columnName": "sub_quad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "habitoDeCrecimiento",
+            "columnName": "habitoDeCrecimiento",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComun",
+            "columnName": "nombreComun",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCientifico",
+            "columnName": "nombreCientifico",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "placa",
+            "columnName": "placa",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "circunferencia",
+            "columnName": "circunferencia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distancia",
+            "columnName": "distancia",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estatura",
+            "columnName": "estatura",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "altura",
+            "columnName": "altura",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario5",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`zona` TEXT NOT NULL, `clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `tipoAnimal` TEXT NOT NULL, `nombreComun` TEXT NOT NULL, `nombreCientifico` TEXT NOT NULL, `numeroIndividuos` TEXT NOT NULL, `tipoObservacion` TEXT NOT NULL, `alturaObservacion` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "zona",
+            "columnName": "zona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoAnimal",
+            "columnName": "tipoAnimal",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreComun",
+            "columnName": "nombreComun",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCientifico",
+            "columnName": "nombreCientifico",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroIndividuos",
+            "columnName": "numeroIndividuos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoObservacion",
+            "columnName": "tipoObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alturaObservacion",
+            "columnName": "alturaObservacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario6",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`codigo` TEXT NOT NULL, `clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `zona` TEXT NOT NULL, `nombreCamara` TEXT NOT NULL, `placaCamara` TEXT NOT NULL, `placaGuaya` TEXT NOT NULL, `anchoCamino` TEXT NOT NULL, `fechaInstalacion` TEXT NOT NULL, `distanciaObjetivo` TEXT NOT NULL, `alturaLente` TEXT NOT NULL, `checklist` TEXT NOT NULL, `observaciones` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "codigo",
+            "columnName": "codigo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zona",
+            "columnName": "zona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreCamara",
+            "columnName": "nombreCamara",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "placaCamara",
+            "columnName": "placaCamara",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "placaGuaya",
+            "columnName": "placaGuaya",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anchoCamino",
+            "columnName": "anchoCamino",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaInstalacion",
+            "columnName": "fechaInstalacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distanciaObjetivo",
+            "columnName": "distanciaObjetivo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alturaLente",
+            "columnName": "alturaLente",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "checklist",
+            "columnName": "checklist",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observaciones",
+            "columnName": "observaciones",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Formulario7",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clima` TEXT NOT NULL, `temporada` TEXT NOT NULL, `zona` TEXT NOT NULL, `pluviosidad` TEXT NOT NULL, `temperaturaMaxima` TEXT NOT NULL, `humedadMaxima` TEXT NOT NULL, `temperaturaMinima` TEXT NOT NULL, `nivelQuebrada` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `fecha` TEXT NOT NULL, `editado` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "clima",
+            "columnName": "clima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temporada",
+            "columnName": "temporada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zona",
+            "columnName": "zona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pluviosidad",
+            "columnName": "pluviosidad",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperaturaMaxima",
+            "columnName": "temperaturaMaxima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humedadMaxima",
+            "columnName": "humedadMaxima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperaturaMinima",
+            "columnName": "temperaturaMinima",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nivelQuebrada",
+            "columnName": "nivelQuebrada",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editado",
+            "columnName": "editado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ImageEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `formularioId` INTEGER NOT NULL, `formularioType` TEXT NOT NULL, `imageUri` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formularioId",
+            "columnName": "formularioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formularioType",
+            "columnName": "formularioType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUri",
+            "columnName": "imageUri",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Usuarios",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`username` TEXT NOT NULL, `lastAccess` TEXT NOT NULL, `lastLogin` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastAccess",
+            "columnName": "lastAccess",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastLogin",
+            "columnName": "lastLogin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "UsuarioFormulario1",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario1`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario1",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UsuarioFormulario2",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario2`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario2",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UsuarioFormulario3",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario3`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario3",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UsuarioFormulario4",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario4`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario4",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UsuarioFormulario5",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario5`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario5",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UsuarioFormulario6",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario6`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario6",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UsuarioFormulario7",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`usuarioId` INTEGER NOT NULL, `formId` INTEGER NOT NULL, PRIMARY KEY(`usuarioId`, `formId`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuarios`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`formId`) REFERENCES `Formulario7`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formId",
+            "columnName": "formId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "usuarioId",
+            "formId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Usuarios",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Formulario7",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "formId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3fb8b9c252b9dc270276fc08bfbf5846')"
+    ]
+  }
+}

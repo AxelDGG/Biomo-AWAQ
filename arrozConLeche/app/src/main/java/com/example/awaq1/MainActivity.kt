@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import com.example.awaq1.data.SessionManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -26,7 +25,6 @@ import com.example.awaq1.view.PrincipalView
 
 class MainActivity : ComponentActivity() {
     lateinit var container: AppContainer
-    lateinit var sessionManager: SessionManager // NEW
     private lateinit var account: Auth0
     lateinit var accountInfo: AccountInfo
     private lateinit var locationPermissionLauncher: ActivityResultLauncher<String>
@@ -53,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 this, CAMERA_PERMISSION, 100
             )
         }
-        sessionManager = SessionManager(applicationContext) // NEW: Initialize SessionManager
+
         enableEdgeToEdge()
         setContent {
             AWAQ1Theme {

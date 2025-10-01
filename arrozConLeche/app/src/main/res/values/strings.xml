@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">awaq1</string>
+    <string name="bienvenido">Bienvenido</string>
+    <string name="inicia_sesion">Inicia Sesión</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="forgot_password">Olvidaste la contraseña?</string>
+    <string name="enter">ENTRAR</string>
+</resources>
