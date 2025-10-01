@@ -47,6 +47,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.text.font.FontStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.toRoute
 import coil.compose.rememberAsyncImagePainter
@@ -55,6 +56,7 @@ import com.example.awaq1.data.formularios.FormularioDosEntity
 import com.example.awaq1.data.formularios.ImageEntity
 import com.example.awaq1.data.formularios.Ubicacion
 import com.example.awaq1.navigator.FormUnoID
+import com.example.awaq1.ui.theme.NombreCientificoForms
 import kotlinx.coroutines.flow.first
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -346,7 +348,8 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                             value = nombreCientifico,
                             onValueChange = { nombreCientifico = it },
                             label = { Text("Nombre Científico") },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = NombreCientificoForms
                         )
 
                         OutlinedTextField(
