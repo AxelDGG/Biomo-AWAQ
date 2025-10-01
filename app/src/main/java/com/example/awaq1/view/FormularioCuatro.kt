@@ -55,6 +55,7 @@ import com.example.awaq1.data.formularios.FormularioCuatroEntity
 import com.example.awaq1.data.formularios.FormularioTresEntity
 import com.example.awaq1.data.formularios.ImageEntity
 import com.example.awaq1.data.formularios.Ubicacion
+import com.example.awaq1.ui.theme.NombreCientificoForms
 import kotlinx.coroutines.flow.first
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -437,7 +438,8 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                             value = nombreCientifico,
                             onValueChange = { nombreCientifico = it },
                             label = { Text("Nombre Científico") },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = NombreCientificoForms
                         )
 			
 			OutlinedTextField(

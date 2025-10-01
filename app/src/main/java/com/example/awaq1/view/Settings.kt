@@ -195,7 +195,7 @@ fun BottomNavigationBar(navController: NavController) {
                 icon = Icons.Default.Settings,
                 isActive = currentRoute == "settings",
                 onClick = {
-                    navController.navigate("settings") {
+                    navController.navigate("busqueda") {
                         popUpTo("home") { inclusive = false }
                     }
                 }
