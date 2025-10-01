@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -104,8 +105,9 @@ fun SelectFormularioScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(16.dp),
+                    //.widthIn(max = 400.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
                 FormChooseButton(FormUnoID(), "Fauna en Transectos", navController)
@@ -130,7 +132,7 @@ fun FormChooseButton(route: Any, text: String, navController: NavController) {
         ),
         shape = RoundedCornerShape(30),
         modifier = Modifier
-            .width(300.dp) // Fixed width and height
+            .fillMaxWidth(0.85f)
     ) {
         Text(
             text,
