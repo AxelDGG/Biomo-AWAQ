@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,13 +23,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.awaq1.MainActivity
 import com.example.awaq1.R
 import com.example.awaq1.view.BottomNavigationBar
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSettingsScreen(navController: NavController) {
+    val context = LocalContext.current as MainActivity
+    val nombre = context.accountInfo.username.substringBefore("@")
+    val correo = context.accountInfo.username
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
@@ -51,14 +58,33 @@ fun UserSettingsScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    IconButton(
+                        onClick = { navController.navigate("settings") },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = Color(0xFF4E7029)
+                        ),
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .size(60.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
 
-                Text(
-                    text = "Hola \nSamantha",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
+                    Text(
+                        text = "$nombre",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,9 +99,8 @@ fun UserSettingsScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                UserInfoRow(icon = Icons.Default.Email, info = "samanthasmith@gmail.com")
+                UserInfoRow(icon = Icons.Default.Email, info = "$correo")
                 UserInfoRow(icon = Icons.Default.Lock, info = "Password")
-                UserInfoRow(icon = Icons.Default.Phone, info = "+57 312 345 6789")
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -139,5 +164,4 @@ fun SettingsSection(title: String, items: List<String>) {
         }
     }
 }
-
 
