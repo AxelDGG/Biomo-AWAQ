@@ -111,12 +111,12 @@ fun PrincipalView(modifier: Modifier = Modifier, auth0: Auth0) {
             LogIn(
                 auth0 = auth0,
                 onLoginSuccess = { newCredentials, username ->
-                    // MODIFIED: Save credentials on successful login
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.Main) {
+                        // These suspend functions will run within the coroutine
                         context.sessionManager.saveCredentials(newCredentials, username)
                         setAccountInfoOnLogin(context, username)
+                        credentials = newCredentials
                     }
-                    credentials = newCredentials
                 },
                 modifier = Modifier.padding(innerPadding)
             )
