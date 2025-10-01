@@ -131,7 +131,7 @@ fun LogIn(
             },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 170.dp).width(160.dp).height(50.dp),
+                    .padding(top = 120.dp).width(160.dp).height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4E7029), // Example: Dodger Blue
                     contentColor = Color(0xFFFFFFFF) // Example: White text
