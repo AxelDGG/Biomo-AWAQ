@@ -11,19 +11,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -133,36 +137,62 @@ fun Home(navController: NavController) {
                     .padding(paddingValues)
             ) {
                 // Header
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(RoundedCornerShape(bottomStart = 2000.dp, bottomEnd = 2000.dp))
-                        .background(Color(0xFFCDE4B4)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        var fontSize by remember { mutableStateOf(50.sp) }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .clip(RoundedCornerShape(bottomStart = 2000.dp, bottomEnd = 2000.dp))
+                            .background(Color(0xFFCDE4B4)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            var fontSize by remember { mutableStateOf(50.sp) }
 
-                        Text(
-                            text = "Hola",
-                            fontSize = fontSize,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF4E7029),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            text = "$nombre!",
-                            fontSize = 36.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF4E7029),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            Text(
+                                text = "Hola",
+                                fontSize = fontSize,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF4E7029),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                text = "$nombre!",
+                                fontSize = 36.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF4E7029),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+
+                    // Boton de agregar reporte
+                    IconButton(
+                        onClick = {
+                            navController.navigate("elegir_reporte") {
+                                popUpTo("home") { inclusive = false }
+                            }
+                        },
+                        modifier = Modifier
+                            .size(80.dp)
+                            .offset(y = 40.dp)
+                            //.padding(vertical = 10.dp)
+                            .background(Color(0xFF4CAF50), CircleShape) // Green background circle
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Reporte",
+                            tint = Color.White
                         )
                     }
                 }
-
+                Spacer(modifier = Modifier.height(28.dp))
                 // Dashboard Section
                 Column(
                     modifier = Modifier
@@ -174,7 +204,9 @@ fun Home(navController: NavController) {
                         fontSize = 35.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333),
-                        modifier = Modifier.padding(bottom = 8.dp).align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .align(Alignment.CenterHorizontally)
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))

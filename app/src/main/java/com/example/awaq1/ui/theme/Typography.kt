@@ -12,6 +12,10 @@ val AppFont = FontFamily(
     Font(R.font.poppinssemibold)
 )
 
+val ItalicAppFont = FontFamily(
+    Font(R.font.poppinssemibolditalic)
+)
+
 // crear tipografia customizada
 val AppTypography = Typography(
     bodyLarge = TextStyle(
@@ -30,4 +34,10 @@ val AppTypography = Typography(
         fontFamily = AppFont,
         fontSize = 25.sp
     )
+
+)
+
+val NombreCientificoForms = TextStyle(
+    fontFamily = ItalicAppFont,
+    fontSize = 16.sp
 )

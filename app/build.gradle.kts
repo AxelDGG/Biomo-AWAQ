@@ -63,10 +63,11 @@ val room_version = "2.6.1"
 
 dependencies {
     implementation(libs.androidx.ui.test.junit4.android)
-
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation(libs.androidx.room.runtime)
     implementation(libs.play.services.location)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.protolite.well.known.types)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
 
