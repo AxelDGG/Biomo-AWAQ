@@ -90,6 +90,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
     var observaciones by remember { mutableStateOf("") }
     var fecha by remember { mutableStateOf("") }
     var editado by remember { mutableStateOf("") }
+    var ubicaciontxt by remember { mutableStateOf("") }
     val cameraViewModel: CameraViewModel = viewModel()
     var showCamera by remember { mutableStateOf(false) }
     val savedImageUris = remember { mutableStateOf(mutableListOf<Uri>()) }
@@ -209,6 +210,12 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                             onValueChange = { transecto = it },
                             label = { Text("Número de Transecto") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = ubicaciontxt,
+                            onValueChange = {},
+                            label = { Text("Ubicación Actual") },
                             modifier = Modifier.fillMaxWidth()
                         )
                         Text("Estado del Tiempo:")

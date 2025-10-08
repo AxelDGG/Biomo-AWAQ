@@ -83,6 +83,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
     var nivelQuebrada by remember { mutableStateOf("") }
     var fecha by remember { mutableStateOf("") }
     var editado by remember { mutableStateOf("") }
+    var ubicaciontxt by remember { mutableStateOf("") }
 
 
     if (formularioId != 0L) {
@@ -189,6 +190,13 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         location?.let { (latitude, longitude) ->
                             Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
                         } ?: Text("Buscando ubicacion...")
+
+                        OutlinedTextField(
+                            value = ubicaciontxt,
+                            onValueChange = {},
+                            label = { Text("Ubicación Actual") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
                         
                         Text("Estado del Tiempo:")
                         FlowRow (

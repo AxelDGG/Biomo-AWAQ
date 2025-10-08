@@ -84,6 +84,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
     val savedImageUris = remember { mutableStateOf(mutableListOf<Uri>()) }
     var fecha by remember { mutableStateOf("") }
     var editado by remember { mutableStateOf("") }
+    var ubicaciontxt by remember { mutableStateOf("") }
 
     if (formularioId != 0L) {
         val formulario: FormularioTresEntity? = runBlocking {
@@ -188,6 +189,13 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                         location?.let { (latitude, longitude) ->
                             Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
                         } ?: Text("Buscando ubicacion...")
+
+                        OutlinedTextField(
+                            value = ubicaciontxt,
+                            onValueChange = {},
+                            label = { Text("Ubicación Actual") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
 
                         OutlinedTextField(
                             value = codigo,
