@@ -267,7 +267,7 @@ fun Busqueda(navController: NavController) {
                                 form.esCompleto()
                             }
                         }
-                        Text("Guardados, no sé como filtrarlos")
+                        Text("Guardados")
                     }
                     Tab.subidos -> {
                         LazyVerticalGrid(

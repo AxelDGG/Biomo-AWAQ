@@ -114,7 +114,12 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-
+// Retrofit & OkHttp
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+// Jetpack DataStore para guardar el token de forma segura
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
     // Include the Compose BOM for Android Test dependencies
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
 }
