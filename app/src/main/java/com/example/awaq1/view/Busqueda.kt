@@ -1,69 +1,31 @@
 package com.example.awaq1.view
 
 import android.util.Log
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import com.example.awaq1.MainActivity
-import com.example.awaq1.R
-import com.example.awaq1.data.formularios.FormularioUnoEntity
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import com.example.awaq1.data.formularios.FormularioCincoEntity
-import com.example.awaq1.data.formularios.FormularioCuatroEntity
-import com.example.awaq1.data.formularios.FormularioDosEntity
-import com.example.awaq1.data.formularios.FormularioSeisEntity
-import com.example.awaq1.data.formularios.FormularioSieteEntity
-import com.example.awaq1.data.formularios.FormularioTresEntity
-import com.example.awaq1.navigator.FormCincoID
-import com.example.awaq1.navigator.FormCuatroID
-import com.example.awaq1.navigator.FormDosID
-import com.example.awaq1.navigator.FormSeisID
-import com.example.awaq1.navigator.FormSieteID
-import com.example.awaq1.navigator.FormTresID
-import com.example.awaq1.navigator.FormUnoID
-
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.awaq1.MainActivity
+import com.example.awaq1.data.formularios.*
+import com.example.awaq1.navigator.*
 
 @OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showBackground = true)
 @Composable
 fun Busqueda(navController: NavController) {
     val context = LocalContext.current as MainActivity
@@ -72,252 +34,158 @@ fun Busqueda(navController: NavController) {
 
     val forms1: List<FormularioUnoEntity> by appContainer.usuariosRepository.getAllFormularioUnoForUserID(
         context.accountInfo.user_id
-    )
-        .collectAsState(initial = emptyList())
+    ).collectAsState(initial = emptyList())
     val forms2: List<FormularioDosEntity> by appContainer.usuariosRepository.getAllFormularioDosForUserID(
         context.accountInfo.user_id
-    )
-        .collectAsState(initial = emptyList())
+    ).collectAsState(initial = emptyList())
     val forms3: List<FormularioTresEntity> by appContainer.usuariosRepository.getAllFormularioTresForUserID(
         context.accountInfo.user_id
-    )
-        .collectAsState(initial = emptyList())
+    ).collectAsState(initial = emptyList())
     val forms4: List<FormularioCuatroEntity> by appContainer.usuariosRepository.getAllFormularioCuatroForUserID(
         context.accountInfo.user_id
-    )
-        .collectAsState(initial = emptyList())
+    ).collectAsState(initial = emptyList())
     val forms5: List<FormularioCincoEntity> by appContainer.usuariosRepository.getAllFormularioCincoForUserID(
         context.accountInfo.user_id
-    )
-        .collectAsState(initial = emptyList())
+    ).collectAsState(initial = emptyList())
     val forms6: List<FormularioSeisEntity> by appContainer.usuariosRepository.getAllFormularioSeisForUserID(
         context.accountInfo.user_id
-    )
-        .collectAsState(initial = emptyList())
+    ).collectAsState(initial = emptyList())
     val forms7: List<FormularioSieteEntity> by appContainer.usuariosRepository.getAllFormularioSieteForUserID(
         context.accountInfo.user_id
+    ).collectAsState(initial = emptyList())
+
+    // Tipos de formulario con opción para quitar filtro
+    val tiposFormulario = listOf(
+        "Todos los tipos", // Esta opción quita el filtrado
+        "Fauna en Transectos",
+        "Fauna en Punto de Conteo",
+        "Validación de Cobertura",
+        "Parcela de Vegetación",
+        "Fauna Búsqueda Libre",
+        "Cámaras Trampa",
+        "Variables Climáticas"
     )
-        .collectAsState(initial = emptyList())
-    val count by appContainer.formulariosRepository.getAllFormulariosCount()
-        .collectAsState(initial = 0)
+    var tipoSeleccionado by remember { mutableStateOf<String?>(null) }
+
+    // Devuelve la lista filtrada según la TAB y tipoSelecccionado
+    fun formulariosFiltradosPorTipo(tab: Tab): List<FormInformation> {
+        val baseList: List<FormInformation> = when (tipoSeleccionado) {
+            null, "Todos los tipos" -> (
+                    forms1.map { FormInformation(it) } +
+                            forms2.map { FormInformation(it) } +
+                            forms3.map { FormInformation(it) } +
+                            forms4.map { FormInformation(it) } +
+                            forms5.map { FormInformation(it) } +
+                            forms6.map { FormInformation(it) } +
+                            forms7.map { FormInformation(it) }
+                    )
+            "Fauna en Transectos" -> forms1.map { FormInformation(it) }
+            "Fauna en Punto de Conteo" -> forms2.map { FormInformation(it) }
+            "Validación de Cobertura" -> forms3.map { FormInformation(it) }
+            "Parcela de Vegetación" -> forms4.map { FormInformation(it) }
+            "Fauna Búsqueda Libre" -> forms5.map { FormInformation(it) }
+            "Cámaras Trampa" -> forms6.map { FormInformation(it) }
+            "Variables Climáticas" -> forms7.map { FormInformation(it) }
+            else -> emptyList()
+        }
+        return when (tab) {
+            Tab.todos -> baseList
+            Tab.guardados -> baseList.filter { !it.completo }
+            Tab.subidos -> baseList.filter { it.completo }
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(text = "Busqueda")
-                },
+                title = { Text(text = "Busqueda") },
                 navigationIcon = {
-                    IconButton(onClick = {  navController.navigate("home")  }) {
+                    IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar"
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFAED581)) // Color similar al de la imagen
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFAED581))
             )
         },
         bottomBar = {
-             BottomNavigationBar(navController)
+            BottomNavigationBar(navController)
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.background(color = Color.White).fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .background(color = Color.White)
+                .fillMaxSize()
+        ) {
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .padding( 16.dp)
+                    .padding(16.dp)
             ) {
-                Row(modifier = Modifier.padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically){
+                // Botones de pestañas
+                Row(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     TextButton(
-                        onClick = {
-                        botonSeleccionado = Tab.todos},
-                        modifier = Modifier.weight(1f)) {
+                        onClick = { botonSeleccionado = Tab.todos },
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(
                             text = "Todos",
-                            textAlign = TextAlign.Center,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = if (botonSeleccionado == Tab.todos) Color.Black else Color.Gray,
+                            color = if (botonSeleccionado == Tab.todos) Color.Black else Color.Gray
                         )
                     }
                     TextButton(
-                        onClick = {
-                        botonSeleccionado = Tab.guardados},
-                        modifier = Modifier.weight(1.3f)) {
+                        onClick = { botonSeleccionado = Tab.guardados },
+                        modifier = Modifier.weight(1.3f)
+                    ) {
                         Text(
                             text = "Incompletos",
-                            textAlign = TextAlign.Center,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = if(botonSeleccionado == Tab.guardados) Color.Black else Color.Gray
+                            color = if (botonSeleccionado == Tab.guardados) Color.Black else Color.Gray
                         )
-
                     }
                     TextButton(
-                        onClick = {
-                            botonSeleccionado = Tab.subidos},
-                        modifier = Modifier.weight(1f)) {
+                        onClick = { botonSeleccionado = Tab.subidos },
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(
                             text = "Completos",
-                            textAlign = TextAlign.Center,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = if(botonSeleccionado == Tab.subidos) Color.Black else Color.Gray
+                            color = if (botonSeleccionado == Tab.subidos) Color.Black else Color.Gray
                         )
                     }
                 }
-                when(botonSeleccionado){
-                    Tab.todos -> {
-                        // Forms Grid
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(1),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            reverseLayout = true,
-                            modifier = Modifier
-                                .padding(horizontal = 0.dp, vertical = 8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            items(count = 1) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
-                            items(forms1) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms2) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                            }
-                            items(forms3) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms4) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms5) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms6) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms7) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                        }
-                    }
-                    Tab.guardados -> {
-                        // Forms Grid
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(1),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            reverseLayout = true,
-                            modifier = Modifier
-                                .padding(horizontal = 0.dp, vertical = 8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            items(count = 1) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
-                            items(forms1.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms2.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                            }
-                            items(forms3.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms4.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms5.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms6.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms7.filter { it.esCompleto() != true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                        }
-                        Text("Guardados, no sé como filtrarlos")
-                    }
-                    Tab.subidos -> {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(1),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            reverseLayout = true,
-                            modifier = Modifier
-                                .padding(horizontal = 0.dp, vertical = 8.dp)
-                                .fillMaxWidth()
-                        ) {
-                            items(count = 1) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
-                            items(forms1.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms2.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                            }
-                            items(forms3.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms4.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms5.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms6.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                            items(forms7.filter { it.esCompleto() == true }) { form ->
-                                val formCard = FormInformation(form)
-                                formCard.verCard(navController)
-                                form.esCompleto()
-                            }
-                        }
-                        Text("Subidos")
+                // Menú desplegable de tipos de formulario
+                OrdenarPorFormularioMenu(
+                    tiposFormulario = tiposFormulario,
+                    tipoSeleccionado = tipoSeleccionado,
+                    onTipoSelected = { tipoSeleccionado = it }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                // Grilla de ítems
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    reverseLayout = true,
+                    modifier = Modifier
+                        .padding(horizontal = 0.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    items(count = 1) { Spacer(modifier = Modifier.height(10.dp)) }
+                    items(formulariosFiltradosPorTipo(botonSeleccionado)) { formCard ->
+                        formCard.verCard(navController)
                     }
                 }
             }
@@ -325,19 +193,57 @@ fun Busqueda(navController: NavController) {
     }
 }
 
-enum class Tab{
+// Menú desplegable. Por defecto dice “Ordenar por:” y cambia el texto al seleccionar
+@Composable
+fun OrdenarPorFormularioMenu(
+    tiposFormulario: List<String>,
+    tipoSeleccionado: String?,
+    onTipoSelected: (String?) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val label = if (tipoSeleccionado == null || tipoSeleccionado == "Todos los tipos") {
+        "Ordenar por:"
+    } else {
+        "Ordenar por: $tipoSeleccionado"
+    }
+    Box {
+        Button(
+            onClick = { expanded = true },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFAED581)),
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
+            Text(label)
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            tiposFormulario.forEach { tipo ->
+                DropdownMenuItem(
+                    text = { Text(tipo) },
+                    onClick = {
+                        onTipoSelected(if (tipo == "Todos los tipos") null else tipo)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+enum class Tab {
     todos, guardados, subidos
 }
 
+// --- DATA CLASS Y CONSTRUCTORES ---
 data class FormInformation(
-    val tipo: String, // Descripcion del tipo de formulario (una sola palabra)
-    val valorIdentificador: String, // Valor que se muestra junto tipo
-    val primerTag: String, // Tag del primer valor a mostrar como preview del formulario
-    val primerContenido: String, // El valor a mostrar junto al primer tag
+    val tipo: String,
+    val valorIdentificador: String,
+    val primerTag: String,
+    val primerContenido: String,
     val segundoTag: String,
     val segundoContenido: String,
-
-    val formulario: String, // Indicador de tipo de formulario, para luego acceder
+    val formulario: String,
     val formId: Long,
     val fechaCreacion: String,
     val fechaEdicion: String,
@@ -353,7 +259,6 @@ data class FormInformation(
         fechaEdicion = formulario.editado,
         completo = formulario.esCompleto()
     )
-
     constructor(formulario: FormularioDosEntity) : this(
         tipo = "Zona", formulario.zona,
         primerTag = "Tipo", formulario.tipoAnimal,
@@ -364,7 +269,6 @@ data class FormInformation(
         fechaEdicion = formulario.editado,
         completo = formulario.esCompleto()
     )
-
     constructor(formulario: FormularioTresEntity) : this(
         tipo = "Código", formulario.codigo,
         primerTag = "Seguimiento", siONo(formulario.seguimiento),
@@ -375,7 +279,6 @@ data class FormInformation(
         fechaEdicion = formulario.editado,
         completo = formulario.esCompleto()
     )
-
     constructor(formulario: FormularioCuatroEntity) : this(
         tipo = "Código", formulario.codigo,
         primerTag = "Cuad. A", formulario.quad_a,
@@ -386,7 +289,6 @@ data class FormInformation(
         fechaEdicion = formulario.editado,
         completo = formulario.esCompleto()
     )
-
     constructor(formulario: FormularioCincoEntity) : this(
         tipo = "Zona", formulario.zona,
         primerTag = "Tipo", formulario.tipoAnimal,
@@ -397,7 +299,6 @@ data class FormInformation(
         fechaEdicion = formulario.editado,
         completo = formulario.esCompleto()
     )
-
     constructor(formulario: FormularioSeisEntity) : this(
         tipo = "Codigo", formulario.codigo,
         primerTag = "Zona", formulario.zona,
@@ -408,7 +309,6 @@ data class FormInformation(
         fechaEdicion = formulario.editado,
         completo = formulario.esCompleto()
     )
-
     constructor(formulario: FormularioSieteEntity) : this(
         tipo = "Zona", formulario.zona,
         primerTag = "Pluviosidad", formulario.pluviosidad,
@@ -454,7 +354,6 @@ data class FormInformation(
                     .fillMaxWidth()
                     .padding(end = 40.dp),
                 Arrangement.SpaceBetween
-
             ) {
                 Column {
                     Text(
@@ -463,7 +362,6 @@ data class FormInformation(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-
                     Row {
                         if (completo) {
                             Icon(
@@ -478,7 +376,6 @@ data class FormInformation(
                                 tint = Color(237, 145, 33)
                             )
                         }
-
                         Spacer(modifier = Modifier.size(10.dp, 10.dp))
                         Text("Creado: $fechaCreacion")
                     }
@@ -490,7 +387,6 @@ data class FormInformation(
                         fontWeight = FontWeight.Normal,
                         color = Color.Black
                     )
-
                     Text(
                         text = "$segundoTag: $segundoContenido",
                         fontSize = 25.sp,
@@ -504,5 +400,3 @@ data class FormInformation(
 }
 
 private fun siONo(boolean: Boolean): String = if (boolean) "Sí" else "No"
-
-
