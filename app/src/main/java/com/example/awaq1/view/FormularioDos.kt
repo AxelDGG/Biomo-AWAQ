@@ -355,7 +355,11 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
 
                         OutlinedTextField(
                             value = numeroIndividuos,
-                            onValueChange = { numeroIndividuos = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    numeroIndividuos = newValue
+                                }},
                             label = { Text("Número de Individuos") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()

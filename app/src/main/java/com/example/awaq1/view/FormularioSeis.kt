@@ -336,7 +336,11 @@ fun ObservationFormSeis(navController: NavController, formularioId: Long = 0) {
                         // Ancho Camino Field
                         OutlinedTextField(
                             value = anchoCamino,
-                            onValueChange = { anchoCamino = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    anchoCamino = newValue
+                                }},
                             label = { Text("Ancho Camino mt") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
@@ -353,7 +357,11 @@ fun ObservationFormSeis(navController: NavController, formularioId: Long = 0) {
                         // Distancia al Objetivo Field
                         OutlinedTextField(
                             value = distanciaObjetivo,
-                            onValueChange = { distanciaObjetivo = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    distanciaObjetivo = newValue
+                                }},
                             label = { Text("Distancia al objetivo mt") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
