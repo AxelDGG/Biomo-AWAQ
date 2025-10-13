@@ -213,16 +213,20 @@ fun NavigationButton(label: String, icon: androidx.compose.ui.graphics.vector.Im
             onClick = onClick,
 
             // Se le agregara un fondo de color blanco si el boton esta activo
-            modifier = if (isActive) {
-                Modifier
-                    .background(color = Color.White, shape = CircleShape)}
-                    else{
+            modifier = Modifier
+                .size(54.dp) // 1. Aumenta el tamaño total del IconButton
+                .then(
+                    if (isActive) { // 2. Aplica el fondo solo si está activo
+                        Modifier.background(color = Color.White, shape = CircleShape)
+                    } else {
                         Modifier
-                }
+                    }
+                )
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = label,
+                modifier = Modifier.size(48.dp), // 3. Aumenta el tamaño del icono
                 tint = if (isActive) Color(0xFF4CAF50) else Color.Gray // Green when active, gray when inactive
             )
         }

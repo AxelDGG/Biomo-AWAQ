@@ -459,28 +459,44 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
 
 			OutlinedTextField(
                             value = circunferencia,
-                            onValueChange = { circunferencia = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    circunferencia = newValue
+                                }},
                             label = { Text("Circunferencia en cm") },
                             modifier = Modifier.fillMaxWidth()
                         )
 
 			OutlinedTextField(
                             value = distancia,
-                            onValueChange = { distancia = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    distancia = newValue
+                                }},
                             label = { Text("Distancia en mt") },
                             modifier = Modifier.fillMaxWidth()
                         )
 
 			OutlinedTextField(
                             value = estatura,
-                            onValueChange = { estatura = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    estatura = newValue
+                                }},
                             label = { Text("Estatura Biomonitor en mt") },
                             modifier = Modifier.fillMaxWidth()
                         )
 
 			OutlinedTextField(
                             value = altura,
-                            onValueChange = { altura = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    altura = newValue
+                                }},
                             label = { Text("Altura en mt") },
                             modifier = Modifier.fillMaxWidth()
                         )

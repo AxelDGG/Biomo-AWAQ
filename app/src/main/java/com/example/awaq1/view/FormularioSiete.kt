@@ -282,7 +282,11 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         // Pluviosidad Field
                         OutlinedTextField(
                             value = pluviosidad,
-                            onValueChange = { pluviosidad = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    pluviosidad = newValue
+                                }},
                             label = { Text("Pluviosidad (mm)") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
@@ -291,7 +295,11 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         // Temperatura Máxima Field
                         OutlinedTextField(
                             value = temperaturaMaxima,
-                            onValueChange = { temperaturaMaxima = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    temperaturaMaxima = newValue
+                                }},
                             label = { Text("Temperatura máxima") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
@@ -300,7 +308,11 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         // Humedad Máxima Field
                         OutlinedTextField(
                             value = humedadMaxima,
-                            onValueChange = { humedadMaxima = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    humedadMaxima = newValue
+                                }},
                             label = { Text("Humedad máxima") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
@@ -309,7 +321,11 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         // Temperatura Mínima Field
                         OutlinedTextField(
                             value = temperaturaMinima,
-                            onValueChange = { temperaturaMinima = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    temperaturaMinima = newValue
+                                }},
                             label = { Text("Temperatura mínima") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
@@ -318,7 +334,11 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         // Nivel Quebrada Field
                         OutlinedTextField(
                             value = nivelQuebrada,
-                            onValueChange = { nivelQuebrada = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    nivelQuebrada = newValue
+                                }},
                             label = { Text("Nivel Quebrada (mt)") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
