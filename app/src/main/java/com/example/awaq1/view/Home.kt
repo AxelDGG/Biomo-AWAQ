@@ -2,6 +2,7 @@ package com.example.awaq1.view
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,10 +26,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,6 +71,10 @@ import com.example.awaq1.navigator.FormUnoID
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 
 @Composable
@@ -122,6 +131,11 @@ fun Home(navController: NavController) {
         .collectAsState(initial = emptyList())
     val count by appContainer.formulariosRepository.getAllFormulariosCount()
         .collectAsState(initial = 0)
+
+    val incompleteCount = forms1.count { !it.esCompleto() } + forms2.count { !it.esCompleto() } +
+            forms3.count { !it.esCompleto() } + forms4.count { !it.esCompleto() } +
+            forms5.count { !it.esCompleto() } + forms6.count { !it.esCompleto() } +
+            forms7.count { !it.esCompleto() }
 
     Scaffold(
         bottomBar = {
@@ -182,7 +196,7 @@ fun Home(navController: NavController) {
                             .size(80.dp)
                             .offset(y = 40.dp)
                             //.padding(vertical = 10.dp)
-                            .background(Color(0xFF4CAF50), CircleShape) // Green background circle
+                            .background(Color(0xFF4E7029), CircleShape) // Green background circle
                             .align(Alignment.BottomCenter)
                     ) {
                         Icon(
@@ -209,58 +223,35 @@ fun Home(navController: NavController) {
                             .align(Alignment.CenterHorizontally)
                     )
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        CircularDeterminateIndicator(count = count, incompleteCount = incompleteCount)
+                    }
+
+                    Spacer(modifier = Modifier.height(80.dp))
 
                     // Stats Row
                     Row(
-                        horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        StatsColumn(label = "Total", count = count, color = Color.Black)
-                    }
+                       Spacer(modifier = Modifier.width(50.dp))
+                        Box(modifier = Modifier.padding( start = 50.dp, end = 83.dp, top = 30.dp, bottom = 30.dp)) {
+                            StatsColumn(label = "Total", count = count, color = Color.Gray)
+                        }
+                        Box(modifier = Modifier.padding(start = 20.dp, end = 30.dp, bottom = 30.dp, top = 30.dp)) {
+                            StatsColumn(label = "Incompletos", count = incompleteCount, color = Color.Gray
+                            )
+                        }
+                        Box(modifier = Modifier.padding(  start = 60.dp, end = 60.dp, top = 30.dp, bottom = 30.dp)) {
+                            StatsColumn(label = "Guardados", count = count - incompleteCount, color = Color.Gray
+                            )
 
-                    // Forms Grid
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(1),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        reverseLayout = true,
-                        modifier = Modifier
-                            .padding(horizontal = 0.dp, vertical = 8.dp)
-                            .fillMaxWidth()
-                    ) {
-                        items(count = 1) {
-                            Spacer(modifier = Modifier.height(10.dp))
                         }
-                        items(forms1) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-                        items(forms2) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-                        items(forms3) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-                        items(forms4) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-                        items(forms5) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-                        items(forms6) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-                        items(forms7) { form ->
-                            val formCard = FormInfo(form)
-                            formCard.DisplayCard(navController)
-                        }
-
                     }
                 }
             }
@@ -273,17 +264,41 @@ fun StatsColumn(label: String, count: Int, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "$count",
-            fontSize = 28.sp,
+            fontSize = 34.sp,
             fontWeight = FontWeight.Bold,
-            color = color
+            color = Color.Black
         )
         Text(
             text = label,
-            fontSize = 24.sp,
-            color = Color.Gray
+            fontSize = 28.sp,
+            color = color
         )
     }
 }
+
+@Composable
+fun CircularDeterminateIndicator(count: Int, incompleteCount: Int){
+
+    val progreso  = (count - incompleteCount) / count.toFloat()
+    val porcentaje = (progreso * 100).toInt()
+
+        Box(
+            contentAlignment = Alignment.Center
+            ) {
+            CircularProgressIndicator(
+                    progress = { progreso },
+                    modifier = Modifier.size(400.dp),
+                    color = Color(0xFF4E7029),
+                    strokeWidth = 30.dp,
+                    trackColor = Color.LightGray
+                )
+                Text(
+                    text = "$porcentaje%",
+                    color = Color(0xFF4E7029),
+                    fontSize = 50.sp,
+                    fontWeight = FontWeight.W900)
+            }
+    }
 
 // Se ve algo así
 // +---------------+
