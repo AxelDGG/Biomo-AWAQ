@@ -158,6 +158,15 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
     // Para Room, 0 significa que no hay un id designado. Genera una nueva entrada con id auto-generado.
     // Un valor de un id existente, reemplaza.
 
+    val isFormValid = transecto.isNotEmpty() &&
+            clima.isNotEmpty() &&
+            temporada.isNotEmpty() &&
+            tipoAnimal.isNotEmpty() &&
+            nombreComun.isNotEmpty() &&
+            nombreCientifico.isNotEmpty() &&
+            numeroIndividuos.isNotEmpty() &&
+            tipoObservacion.isNotEmpty()
+
 
     Scaffold(
         topBar = {
@@ -473,7 +482,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    "Atras",
+                                    "Atrás",
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.SemiBold
@@ -545,7 +554,33 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                     )
                                 )
                             }
+
+
                         }
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Button(
+                                onClick = { navController.navigate("home") },
+                                enabled = isFormValid,
+                                modifier = Modifier.fillMaxWidth(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (isFormValid) Color(0xFF4E7029) else Color.Gray,
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "Enviar",
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                )
+
+                            }
+                        }
+                        Spacer(modifier= Modifier.weight(0.4f))
                     }
                 }
             }

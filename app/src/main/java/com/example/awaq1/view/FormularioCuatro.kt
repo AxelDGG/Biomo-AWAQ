@@ -574,7 +574,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    "Atras",
+                                    "Atrás",
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.SemiBold
@@ -643,7 +643,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    "Enviar",
+                                    "Guardar",
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.SemiBold
@@ -651,6 +651,29 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 )
                             }
                         }
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Button(
+                                onClick = { navController.navigate("home") },
+                                modifier = Modifier.fillMaxWidth(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF82BB44),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "Enviar",
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                )
+
+                            }
+                        }
+                        Spacer(modifier= Modifier.weight(0.4f))
                     }
                 }
             }
