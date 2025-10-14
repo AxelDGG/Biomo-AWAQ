@@ -6,8 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthApiService {
-    @POST("api/auth/signup")
-    suspend fun signUp(@Body request: AuthRequest): Response<Unit>
+    //para futuras implementaciones
+  //  @POST("api/auth/signup")
+  //  suspend fun signUp(@Body request: AuthRequest): Response<Unit>
 
     @POST("api/auth/signin")
     suspend fun signIn(@Body request: AuthRequest): Response<AuthResponse>

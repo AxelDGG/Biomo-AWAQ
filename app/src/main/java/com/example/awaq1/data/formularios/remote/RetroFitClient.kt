@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.example.awaq1.data.formularios.local.TokenManager
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:4000/"
+    private const val BASE_URL = "https://api.ecoranger.org/api/"
 
     fun create(tokenManager: TokenManager): AuthApiService {
         val loggingInterceptor = HttpLoggingInterceptor().apply {

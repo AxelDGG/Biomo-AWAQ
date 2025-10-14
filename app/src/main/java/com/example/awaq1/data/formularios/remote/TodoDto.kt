@@ -1,7 +1,7 @@
 package com.example.awaq1.data.formularios.remote
 
 data class TodoDto(
-    val id: Int, // O Int, dependiendo de tu backend
+    val id: Int, // O Int, dependiendo de backend
     val userId: Int,
     val task: String,
     val isCompleted: Boolean,

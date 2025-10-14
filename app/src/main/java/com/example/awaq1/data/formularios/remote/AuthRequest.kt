@@ -1,5 +1,6 @@
 package com.example.awaq1.data.formularios.remote
 
+
 data class AuthRequest(
     val email: String,
     val password: String
