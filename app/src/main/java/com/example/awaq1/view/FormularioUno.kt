@@ -207,7 +207,11 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
 
                         OutlinedTextField(
                             value = transecto,
-                            onValueChange = { transecto = it },
+                            onValueChange = { newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    transecto = newValue
+                                }},
                             label = { Text("Número de Transecto") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
@@ -361,7 +365,11 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
 
                         OutlinedTextField(
                             value = numeroIndividuos,
-                            onValueChange = { numeroIndividuos = it },
+                            onValueChange ={ newValue ->
+                                // Solo actualiza el estado si el nuevo valor son solo dígitos o está vacío
+                                if (newValue.all { it.isDigit() }) {
+                                    numeroIndividuos = newValue
+                                }},
                             label = { Text("Número de Individuos") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
