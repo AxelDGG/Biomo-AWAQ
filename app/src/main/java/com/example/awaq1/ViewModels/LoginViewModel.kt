@@ -22,8 +22,12 @@ class LoginViewModel(
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
+                // Limpiamos los datos de entrada antes de enviarlos
+                val cleanEmail = email.trim()
+                val cleanPassword = password_user.trim()
+
                 // El tipo de '''response''' es Response<AuthResponse>
-                val response = authApiService.signIn(AuthRequest(email, password_user))
+                val response = authApiService.signIn(AuthRequest(cleanEmail, cleanPassword))
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     // Usamos el nuevo AuthResponse para acceder a los datos de forma segura
