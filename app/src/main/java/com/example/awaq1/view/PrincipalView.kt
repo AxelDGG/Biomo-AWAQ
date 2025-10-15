@@ -6,9 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.example.awaq1.navigator.AppNavigator
 import com.example.awaq1.ViewModels.LoginViewModel
 import com.example.awaq1.ViewModels.LoginViewModelFactory
 import com.example.awaq1.data.formularios.local.TokenManager
@@ -25,25 +23,19 @@ fun PrincipalView() {
     val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(
         authApiService,
         tokenManager
-    )
-    )
+    ))
 
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = if (authToken != null) "selectForm" else "login") {
-        composable("login") {
-            LogIn(
-                loginViewModel = loginViewModel,
-                onLoginSuccess = {
-                    navController.navigate("selectForm") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                }
-            )
-        }
-        composable("selectForm") {
-            SelectFormularioScreen(navController)
-        }
-        // Agrega otras rutas de navegación aquí
+    if (authToken != null) {
+        AppNavigator(onLogout = {
+            loginViewModel.logout()
+        })
+    } else {
+        LogIn(
+            loginViewModel = loginViewModel,
+            onLoginSuccess = { }
+        )
     }
 }
+
+
+

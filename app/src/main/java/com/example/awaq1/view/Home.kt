@@ -289,23 +289,22 @@ fun CircularDeterminateIndicator(count: Int, incompleteCount: Int){
 
     val progreso  = if (count > 0) (count - incompleteCount) / count.toFloat() else 0f
     val porcentaje = (progreso * 100).toInt()
-
-        Box(
-            contentAlignment = Alignment.Center
-            ) {
-            CircularProgressIndicator(
-                    progress = { progreso },
-                    modifier = Modifier.size(400.dp),
-                    color = Color(0xFF4E7029),
-                    strokeWidth = 30.dp,
-                    trackColor = Color.LightGray
-                )
-                Text(
-                    text = "$porcentaje%",
-                    color = Color(0xFF4E7029),
-                    fontSize = 50.sp,
-                    fontWeight = FontWeight.W900)
-            }
+    Box(
+        contentAlignment = Alignment.Center
+        ) {
+        CircularProgressIndicator(
+                progress = { progreso },
+                modifier = Modifier.size(400.dp),
+                color = Color(0xFF4E7029),
+                strokeWidth = 30.dp,
+                trackColor = Color.LightGray
+            )
+            Text(
+                text = "$porcentaje%",
+                color = Color(0xFF4E7029),
+                fontSize = 50.sp,
+                fontWeight = FontWeight.W900)
+        }
     }
 
 // Se ve algo así

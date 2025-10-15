@@ -50,7 +50,15 @@ class LoginViewModel(
             }
         }
     }
+    fun logout() {
+        viewModelScope.launch {
+            // Esta es la llamada correcta
+            tokenManager.clearSession()
+        }
+    }
 }
+
+
 
 sealed class LoginState {
     object Idle : LoginState()

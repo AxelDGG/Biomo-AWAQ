@@ -103,7 +103,7 @@ fun LogIn(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
-                visualTransformation = if (viewpassword) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = PasswordVisualTransformation(),
                 trailingIcon = {
                     val image = if (viewpassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     Icon(
