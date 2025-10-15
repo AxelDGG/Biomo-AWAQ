@@ -55,6 +55,7 @@ import com.example.awaq1.ViewModels.CameraViewModel
 import com.example.awaq1.data.formularios.FormularioDosEntity
 import com.example.awaq1.data.formularios.ImageEntity
 import com.example.awaq1.data.formularios.Ubicacion
+import com.example.awaq1.data.formularios.local.TokenManager
 import com.example.awaq1.navigator.FormUnoID
 import com.example.awaq1.ui.theme.NombreCientificoForms
 import kotlinx.coroutines.flow.first
@@ -75,6 +76,8 @@ fun Preview() {
 fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
     val context = LocalContext.current as MainActivity
     val appContainer = context.container
+    val tokenManager = TokenManager(context)
+    val userId by tokenManager.userId.collectAsState(initial = null)
 
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
     val ubicacion = Ubicacion(context)
@@ -501,34 +504,46 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             latitude = location?.first,
                                             longitude = location?.second,
                                             fecha = fecha,
-                                            editado = editado
+                                            editado
+                                            = editado
                                         ).withID(formularioId)
                                     // Guardar en base de datos, vinculado al usuario
-                                    runBlocking {
-                                        // Insert regresa su id
-                                        val formId =
-                                            appContainer.usuariosRepository.insertUserWithFormularioUno(
-                                                context.accountInfo.user_id, formulario
-                                            )
-                                        Log.d("ImageDAO", "formId: $formId")
 
-                                        // Borrar todas las fotos en ese reporte
-                                        appContainer.formulariosRepository.deleteImagesByFormulario(
-                                            formularioId = formId,
-                                            formularioType = "Formulario1"
-                                        )
+                                    val currentUserId = userId
 
-                                        // Agregar todas las imagenes al reporte
-                                        savedImageUris.value.forEach { uri ->
-                                            val image = ImageEntity(
+                                    if (currentUserId != null){
+                                        runBlocking {
+                                            // Insert regresa su id
+                                            val formId =
+                                                appContainer.usuariosRepository.insertUserWithFormularioUno(
+                                                    currentUserId.toLong(), // <-- ¡CORREGIDO!
+                                                    formulario
+                                                )
+                                            Log.d("ImageDAO", "formId: $formId")
+
+                                            // Borrar todas las fotos en ese reporte
+                                            appContainer.formulariosRepository.deleteImagesByFormulario(
                                                 formularioId = formId,
-                                                formularioType = "Formulario1",
-                                                imageUri = uri.toString()
+                                                formularioType = "Formulario1"
                                             )
-                                            appContainer.formulariosRepository.insertImage(image)
+
+                                            // Agregar todas las imagenes al reporte
+                                            savedImageUris.value.forEach { uri ->
+                                                val image = ImageEntity(
+                                                    formularioId = formId,
+                                                    formularioType = "Formulario1",
+                                                    imageUri = uri.toString()
+                                                )
+                                                appContainer.formulariosRepository.insertImage(image)
+                                            }
                                         }
+                                        navController.navigate("home")
+                                    }else {
+                                        Log.e(
+                                            "FormularioCinco",
+                                            "No se pudo enviar: ID de usuario no encontrado."
+                                        )
                                     }
-                                    navController.navigate("home")
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF4E7029),

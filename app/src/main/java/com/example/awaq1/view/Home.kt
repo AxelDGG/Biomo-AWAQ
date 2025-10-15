@@ -71,20 +71,23 @@ import com.example.awaq1.navigator.FormUnoID
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.awaq1.data.formularios.local.TokenManager
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.collections.emptyList
 
 
 @Composable
 fun Home(navController: NavController) {
-    val context = LocalContext.current as MainActivity
+    val context = LocalContext.current
+    val mainActivity = context as? MainActivity
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
     val ubicacion = Ubicacion(context)
     if(location == null){
         LaunchedEffect(Unit) {
-            context.requestLocationPermission()
+            mainActivity?.requestLocationPermission()
             if (ubicacion.hasLocationPermission()) {
                 location = ubicacion.obtenerCoordenadas()
                 if (location != null) {
@@ -97,38 +100,43 @@ fun Home(navController: NavController) {
             }
         }
     }
-    //Username para saludo
-    val nombre = context.accountInfo.username.substringBefore("@")
 
-    val appContainer = context.container
-    val forms1: List<FormularioUnoEntity> by appContainer.usuariosRepository.getAllFormularioUnoForUserID(
-        context.accountInfo.user_id
-    )
+    // Obtenemos el ID de usuario desde el TokenManager
+    val tokenManager = remember { TokenManager(context) }
+    val userId by tokenManager.userId.collectAsState(initial = null)
+
+    // Usamos un texto temporal para el nombre.
+    val nombre = "usuario"
+
+    val appContainer = (context as MainActivity).container
+    val usuariosRepository = appContainer.usuariosRepository
+    val userIdLong = userId?.toLongOrNull()
+
+    // Creamos Flows vacios para cuando el userId aun no esta disponible
+    val emptyFlow1 = remember { flowOf(emptyList<FormularioUnoEntity>()) }
+    val emptyFlow2 = remember { flowOf(emptyList<FormularioDosEntity>()) }
+    val emptyFlow3 = remember { flowOf(emptyList<FormularioTresEntity>()) }
+    val emptyFlow4 = remember { flowOf(emptyList<FormularioCuatroEntity>()) }
+    val emptyFlow5 = remember { flowOf(emptyList<FormularioCincoEntity>()) }
+    val emptyFlow6 = remember { flowOf(emptyList<FormularioSeisEntity>()) }
+    val emptyFlow7 = remember { flowOf(emptyList<FormularioSieteEntity>()) }
+
+
+    val forms1: List<FormularioUnoEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioUnoForUserID(userIdLong) else emptyFlow1)
         .collectAsState(initial = emptyList())
-    val forms2: List<FormularioDosEntity> by appContainer.usuariosRepository.getAllFormularioDosForUserID(
-        context.accountInfo.user_id
-    )
+    val forms2: List<FormularioDosEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioDosForUserID(userIdLong) else emptyFlow2)
         .collectAsState(initial = emptyList())
-    val forms3: List<FormularioTresEntity> by appContainer.usuariosRepository.getAllFormularioTresForUserID(
-        context.accountInfo.user_id
-    )
+    val forms3: List<FormularioTresEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioTresForUserID(userIdLong) else emptyFlow3)
         .collectAsState(initial = emptyList())
-    val forms4: List<FormularioCuatroEntity> by appContainer.usuariosRepository.getAllFormularioCuatroForUserID(
-        context.accountInfo.user_id
-    )
+    val forms4: List<FormularioCuatroEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioCuatroForUserID(userIdLong) else emptyFlow4)
         .collectAsState(initial = emptyList())
-    val forms5: List<FormularioCincoEntity> by appContainer.usuariosRepository.getAllFormularioCincoForUserID(
-        context.accountInfo.user_id
-    )
+    val forms5: List<FormularioCincoEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioCincoForUserID(userIdLong) else emptyFlow5)
         .collectAsState(initial = emptyList())
-    val forms6: List<FormularioSeisEntity> by appContainer.usuariosRepository.getAllFormularioSeisForUserID(
-        context.accountInfo.user_id
-    )
+    val forms6: List<FormularioSeisEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioSeisForUserID(userIdLong) else emptyFlow6)
         .collectAsState(initial = emptyList())
-    val forms7: List<FormularioSieteEntity> by appContainer.usuariosRepository.getAllFormularioSieteForUserID(
-        context.accountInfo.user_id
-    )
+    val forms7: List<FormularioSieteEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioSieteForUserID(userIdLong) else emptyFlow7)
         .collectAsState(initial = emptyList())
+
     val count by appContainer.formulariosRepository.getAllFormulariosCount()
         .collectAsState(initial = 0)
 
@@ -279,7 +287,7 @@ fun StatsColumn(label: String, count: Int, color: Color) {
 @Composable
 fun CircularDeterminateIndicator(count: Int, incompleteCount: Int){
 
-    val progreso  = (count - incompleteCount) / count.toFloat()
+    val progreso  = if (count > 0) (count - incompleteCount) / count.toFloat() else 0f
     val porcentaje = (progreso * 100).toInt()
 
         Box(
@@ -311,176 +319,5 @@ data class FormInfo(
     val tipo: String, // Descripcion del tipo de formulario (una sola palabra)
     val valorIdentificador: String, // Valor que se muestra junto tipo
     val primerTag: String, // Tag del primer valor a mostrar como preview del formulario
-    val primerContenido: String, // El valor a mostrar junto al primer tag
-    val segundoTag: String,
-    val segundoContenido: String,
-
-    val formulario: String, // Indicador de tipo de formulario, para luego acceder
-    val formId: Long,
-    val fechaCreacion: String,
-    val fechaEdicion: String,
-    val completo: Boolean
-) {
-    constructor(formulario: FormularioUnoEntity) : this(
-        tipo = "Transecto", formulario.transecto,
-        primerTag = "Tipo", formulario.tipoAnimal,
-        segundoTag = "Nombre", formulario.nombreComun,
-        formulario = "form1",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    constructor(formulario: FormularioDosEntity) : this(
-        tipo = "Zona", formulario.zona,
-        primerTag = "Tipo", formulario.tipoAnimal,
-        segundoTag = "Nombre", formulario.nombreComun,
-        formulario = "form2",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    constructor(formulario: FormularioTresEntity) : this(
-        tipo = "Código", formulario.codigo,
-        primerTag = "Seguimiento", siONo(formulario.seguimiento),
-        segundoTag = "Cambio", siONo(formulario.cambio),
-        formulario = "form3",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    constructor(formulario: FormularioCuatroEntity) : this(
-        tipo = "Código", formulario.codigo,
-        primerTag = "Cuad. A", formulario.quad_a,
-        segundoTag = "Cuad. B", formulario.quad_b,
-        formulario = "form4",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    constructor(formulario: FormularioCincoEntity) : this(
-        tipo = "Zona", formulario.zona,
-        primerTag = "Tipo", formulario.tipoAnimal,
-        segundoTag = "Nombre", formulario.nombreComun,
-        formulario = "form5",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    constructor(formulario: FormularioSeisEntity) : this(
-        tipo = "Codigo", formulario.codigo,
-        primerTag = "Zona", formulario.zona,
-        segundoTag = "PlacaCamara", formulario.placaCamara,
-        formulario = "form6",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    constructor(formulario: FormularioSieteEntity) : this(
-        tipo = "Zona", formulario.zona,
-        primerTag = "Pluviosidad", formulario.pluviosidad,
-        segundoTag = "TempMax", formulario.temperaturaMaxima,
-        formulario = "form7",
-        formId = formulario.id,
-        fechaCreacion = formulario.fecha,
-        fechaEdicion = formulario.editado,
-        completo = formulario.esCompleto()
-    )
-
-    fun goEditFormulario(navController: NavController) {
-        Log.d("HOME_CLICK_ACTION", "Click en $this")
-        when (formulario) {
-            "form1" -> navController.navigate(route = FormUnoID(formId))
-            "form2" -> navController.navigate(route = FormDosID(formId))
-            "form3" -> navController.navigate(route = FormTresID(formId))
-            "form4" -> navController.navigate(route = FormCuatroID(formId))
-            "form5" -> navController.navigate(route = FormCincoID(formId))
-            "form6" -> navController.navigate(route = FormSeisID(formId))
-            "form7" -> navController.navigate(route = FormSieteID(formId))
-            else -> throw Exception("CARD NAVIGATION NOT IMPLEMENTED FOR $formulario")
-        }
-    }
-
-    @Composable
-    fun DisplayCard(navController: NavController, modifier: Modifier = Modifier) {
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding()
-                .clickable { this.goEditFormulario(navController) },
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 4.dp
-            ),
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth()
-                    .padding(end = 40.dp),
-                Arrangement.SpaceBetween
-
-            ) {
-                Column {
-
-                    Text(
-                        text = "$tipo: $valorIdentificador",
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-
-                    )
-
-                    Row {
-                        if (completo) {
-                            Icon(
-                                imageVector = Icons.Rounded.CheckCircle,
-                                contentDescription = null,
-                                tint = Color.Green
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Rounded.Warning,
-                                contentDescription = null,
-                                tint = Color(237, 145, 33)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.size(10.dp, 10.dp))
-                        Text("Creado: $fechaCreacion")
-                    }
-                }
-                Column {
-                    Text(
-                        text = "$primerTag: $primerContenido",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Black
-                    )
-
-                    Text(
-                        text = "$segundoTag: $segundoContenido",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Black
-                    )
-                }
-            }
-        }
-    }
-}
-
-private fun siONo(boolean: Boolean): String = if (boolean) "Sí" else "No"
+    val primerContenido: String
+)

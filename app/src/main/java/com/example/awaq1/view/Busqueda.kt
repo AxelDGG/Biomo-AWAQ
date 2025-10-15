@@ -22,41 +22,64 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.awaq1.MainActivity
+import com.example.awaq1.data.formularios.local.TokenManager
 import com.example.awaq1.data.formularios.*
 import com.example.awaq1.navigator.*
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Busqueda(navController: NavController) {
-    val context = LocalContext.current as MainActivity
-    val appContainer = context.container
+    val context = LocalContext.current
+    // 1. Obtenemos el TokenManager y el repositorio
+    val tokenManager = TokenManager(context)
+    val appContainer = (context.applicationContext as MainActivity).container
+    val usuariosRepository = appContainer.usuariosRepository
+
+    // 2. Observamos el ID del usuario desde el TokenManager
+    val userId by tokenManager.userId.collectAsState(initial = null)
+
     var botonSeleccionado by remember { mutableStateOf(Tab.todos) }
 
-    val forms1: List<FormularioUnoEntity> by appContainer.usuariosRepository.getAllFormularioUnoForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
-    val forms2: List<FormularioDosEntity> by appContainer.usuariosRepository.getAllFormularioDosForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
-    val forms3: List<FormularioTresEntity> by appContainer.usuariosRepository.getAllFormularioTresForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
-    val forms4: List<FormularioCuatroEntity> by appContainer.usuariosRepository.getAllFormularioCuatroForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
-    val forms5: List<FormularioCincoEntity> by appContainer.usuariosRepository.getAllFormularioCincoForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
-    val forms6: List<FormularioSeisEntity> by appContainer.usuariosRepository.getAllFormularioSeisForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
-    val forms7: List<FormularioSieteEntity> by appContainer.usuariosRepository.getAllFormularioSieteForUserID(
-        context.accountInfo.user_id
-    ).collectAsState(initial = emptyList())
+    // 3. Usamos produceState para cargar los formularios solo cuando el userId está disponible
+    val forms1 by produceState<List<FormularioUnoEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioUnoForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
+    val forms2 by produceState<List<FormularioDosEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioDosForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
+    val forms3 by produceState<List<FormularioTresEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioTresForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
+    val forms4 by produceState<List<FormularioCuatroEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioCuatroForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
+    val forms5 by produceState<List<FormularioCincoEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioCincoForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
+    val forms6 by produceState<List<FormularioSeisEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioSeisForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
+    val forms7 by produceState<List<FormularioSieteEntity>>(initialValue = emptyList(), userId) {
+        if (userId != null) {
+            usuariosRepository.getAllFormularioSieteForUserID(userId!!.toLong()).collect { value = it }
+        }
+    }
 
-    // Tipos de formulario con opción para quitar filtro
     val tiposFormulario = listOf(
-        "Todos los tipos", // Esta opción quita el filtrado
+        "Todos los tipos",
         "Fauna en Transectos",
         "Fauna en Punto de Conteo",
         "Validación de Cobertura",
@@ -67,7 +90,6 @@ fun Busqueda(navController: NavController) {
     )
     var tipoSeleccionado by remember { mutableStateOf<String?>(null) }
 
-    // Devuelve la lista filtrada según la TAB y tipoSelecccionado
     fun formulariosFiltradosPorTipo(tab: Tab): List<FormInformation> {
         val baseList: List<FormInformation> = when (tipoSeleccionado) {
             null, "Todos los tipos" -> (
@@ -124,7 +146,6 @@ fun Busqueda(navController: NavController) {
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Botones de pestañas
                 Row(
                     modifier = Modifier.padding(bottom = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -166,14 +187,12 @@ fun Busqueda(navController: NavController) {
                         )
                     }
                 }
-                // Menú desplegable de tipos de formulario
                 OrdenarPorFormularioMenu(
                     tiposFormulario = tiposFormulario,
                     tipoSeleccionado = tipoSeleccionado,
                     onTipoSelected = { tipoSeleccionado = it }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                // Grilla de ítems
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -193,7 +212,6 @@ fun Busqueda(navController: NavController) {
     }
 }
 
-// Menú desplegable. Por defecto dice “Ordenar por:” y cambia el texto al seleccionar
 @Composable
 fun OrdenarPorFormularioMenu(
     tiposFormulario: List<String>,
@@ -235,7 +253,6 @@ enum class Tab {
     todos, guardados, subidos
 }
 
-// --- DATA CLASS Y CONSTRUCTORES ---
 data class FormInformation(
     val tipo: String,
     val valorIdentificador: String,

@@ -1,22 +1,46 @@
 package com.example.awaq1.data.formularios.remote
 
+import com.google.gson.annotations.SerializedName
 
+/**
+ * Representa el cuerpo de la petición para iniciar sesión.
+ */
 data class AuthRequest(
-    val email: String,
-    val password: String
+    @SerializedName("user_email") val email: String,
+    @SerializedName("password") val password: String
 )
 
+/**
+ * Representa la respuesta COMPLETA del endpoint de login.
+ * Esta es la versión corregida que incluye el objeto User.
+ */
 data class AuthResponse(
-    val message: String,
-    val token: String
+    @SerializedName("message") val message: String,
+    @SerializedName("token") val token: String,
+    @SerializedName("token_type") val tokenType: String,
+    @SerializedName("expires_in") val expiresIn: String,
+    @SerializedName("user") val user: User? // El objeto de usuario que faltaba
 )
 
+
+
+/**
+ * Respuesta del endpoint de OBTENER PERFIL.
+ */
 data class ProfileResponse(
-    val message: String,
-    val user: User
+    @SerializedName("message") val message: String,
+    @SerializedName("user") val user: User
 )
 
+/**
+ * Representa el objeto de usuario anidado en la respuesta.
+ * Esta es la versión corregida que coincide con los datos de tu API.
+ */
 data class User(
-    val id: Int,
-    val email: String
+    @SerializedName("id") val id: Int,
+    @SerializedName("username") val username: String,
+    @SerializedName("user_email") val userEmail: String,
+    @SerializedName("lastAccess") val lastAccess: String,
+    @SerializedName("lastLogin") val lastLogin: String,
+    @SerializedName("tenant") val tenant: String
 )

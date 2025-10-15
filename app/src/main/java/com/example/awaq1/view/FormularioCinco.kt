@@ -50,6 +50,7 @@ import com.example.awaq1.ViewModels.CameraViewModel
 import com.example.awaq1.data.formularios.FormularioCincoEntity
 import com.example.awaq1.data.formularios.ImageEntity
 import com.example.awaq1.data.formularios.Ubicacion
+import com.example.awaq1.data.formularios.local.TokenManager
 import com.example.awaq1.ui.theme.NombreCientificoForms
 import kotlinx.coroutines.flow.first
 
@@ -65,6 +66,8 @@ fun PreviewForm5() {
 @Composable
 fun ObservationFormCinco(navController: NavController, formularioId: Long = 0) {
     val context = LocalContext.current as MainActivity
+    val tokenManager = TokenManager(context)
+    val userId by tokenManager.userId.collectAsState(initial = null)
     val appContainer = context.container
     var showCamera by remember { mutableStateOf(false) }
     val cameraViewModel: CameraViewModel = viewModel()
@@ -523,32 +526,42 @@ fun ObservationFormCinco(navController: NavController, formularioId: Long = 0) {
                                             fecha = fecha,
                                             editado = editado
                                         ).withID(formularioId)
+                                    // Guarda el userId actual para usarlo de forma segura
+                                    val currentUserId = userId
 
-                                    runBlocking {
-                                        // Insert regresa su id
-                                        val formId = appContainer.usuariosRepository.insertUserWithFormularioCinco(
-                                            context.accountInfo.user_id, formulario
-                                        )
-                                        Log.d("ImageDAO", "formId: $formId")
+                                    if (currentUserId != null) {
+                                        runBlocking {
+                                            // Insert regresa su id
+                                            val formId =
+                                                appContainer.usuariosRepository.insertUserWithFormularioCinco(
+                                                    currentUserId.toLong(),
+                                                    formulario
+                                                )
+                                            Log.d("ImageDAO", "formId: $formId")
 
-                                        // Borrar todas las fotos en ese reporte
-                                        appContainer.formulariosRepository.deleteImagesByFormulario(
-                                            formularioId = formId,
-                                            formularioType = "Formulario5"
-                                        )
-
-                                        // Agregar todas las imagenes al reporte
-                                        savedImageUris.value.forEach { uri ->
-                                            val image = ImageEntity(
+                                            // Borrar todas las fotos en ese reporte
+                                            appContainer.formulariosRepository.deleteImagesByFormulario(
                                                 formularioId = formId,
-                                                formularioType = "Formulario5",
-                                                imageUri = uri.toString()
+                                                formularioType = "Formulario5"
                                             )
-                                            appContainer.formulariosRepository.insertImage(image)
-                                        }
-                                    }
 
-                                    navController.navigate("home")
+                                            // Agregar todas las imagenes al reporte
+                                            savedImageUris.value.forEach { uri ->
+                                                val image = ImageEntity(
+                                                    formularioId = formId,
+                                                    formularioType = "Formulario5",
+                                                    imageUri = uri.toString()
+                                                )
+                                                appContainer.formulariosRepository.insertImage(image)
+                                            }
+                                        }
+                                        navController.navigate("home")
+                                    } else {
+                                        Log.e(
+                                            "FormularioCinco",
+                                            "No se pudo enviar: ID de usuario no encontrado."
+                                        )
+                                    }
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF4E7029),
