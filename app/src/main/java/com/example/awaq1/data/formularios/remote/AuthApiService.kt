@@ -10,7 +10,7 @@ interface AuthApiService {
   //  @POST("api/biomo/auth/signup")
   //  suspend fun signUp(@Body request: AuthRequest): Response<Unit>
 
-    @POST("api/biomo/auth/signin")
+    @POST("api/biomo/users/login")
     suspend fun signIn(@Body request: AuthRequest): Response<AuthResponse>
 
     @GET("api/biomo/profile")
