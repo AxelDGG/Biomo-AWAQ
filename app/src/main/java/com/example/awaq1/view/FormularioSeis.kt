@@ -54,7 +54,9 @@ import com.example.awaq1.data.formularios.Ubicacion
 import com.example.awaq1.data.formularios.local.TokenManager
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
-
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
@@ -66,15 +68,16 @@ fun PreviewForm6() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ObservationFormSeis(navController: NavController, formularioId: Long = 0) {
-    val context = LocalContext.current as MainActivity
-    val appContainer = context.container
-    val tokenManager = TokenManager(context)
+    val activity = LocalContext.current as? MainActivity ?: return
+    val appContainer = activity.container
+    val tokenManager = TokenManager(activity)
     val userId by tokenManager.userId.collectAsState(initial = null)
     var showCamera by remember { mutableStateOf(false) }
     val cameraViewModel: CameraViewModel = viewModel()
     val savedImageUris = remember { mutableStateOf(mutableListOf<Uri>()) }
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
-    val ubicacion = Ubicacion(context)
+    val ubicacion = Ubicacion(activity)
+    val scope = rememberCoroutineScope()
 
     var codigo by remember { mutableStateOf("") }
     var clima by remember { mutableStateOf("") }
@@ -101,66 +104,61 @@ fun ObservationFormSeis(navController: NavController, formularioId: Long = 0) {
     var editado by remember { mutableStateOf("") }
     var ubicaciontxt by remember { mutableStateOf("") }
 
-    if (formularioId != 0L) {
-        val formulario: FormularioSeisEntity? = runBlocking {
-            Log.d("Formulario6Loading", "Loading formulario6 with ID $formularioId")
-            appContainer.formulariosRepository.getFormularioSeisStream(formularioId).first()
-        }
 
-        if (formulario != null) {
-            codigo = formulario.codigo
-            zona = formulario.zona
-            clima = formulario.clima
-            temporada = formulario.temporada
-            nombreCamara = formulario.nombreCamara
-            placaCamara = formulario.placaCamara
-            placaGuaya = formulario.placaGuaya
-            anchoCamino = formulario.anchoCamino
-            fechaInstalacion = formulario.fechaInstalacion
-            distanciaObjetivo = formulario.distanciaObjetivo
-            alturaLente = formulario.alturaLente
-            observaciones = formulario.observaciones
-            fecha = formulario.fecha
-            editado = formulario.editado
-            location = if (formulario.latitude != null && formulario.longitude != null) {
-                Pair(formulario.latitude, formulario.longitude)
-            } else {
-                null
-            }
-            val restoredChecklist: Map<String, Boolean> = Gson().fromJson(
-                formulario.checklist,
-                object : com.google.gson.reflect.TypeToken<Map<String, Boolean>>() {}.type // Explicitly define the type
-            )
+    LaunchedEffect(formularioId) {
+        if (formularioId != 0L) {
+            val formulario = appContainer.formulariosRepository
+                .getFormularioSeisStream(formularioId).first()
 
-            restoredChecklist.forEach { (item, isChecked) ->
-                checklistState[item] = isChecked // No type mismatch now
-            }
-            // Load saved images
-            val storedImages = runBlocking {
-                appContainer.formulariosRepository.getImagesByFormulario(formularioId, "Formulario6")
-                    .first() // Fetch the list of ImageEntity for this form
-            }
-
-            // Convert image URIs from String to Uri and store them in savedImageUris
-            savedImageUris.value = storedImages.mapNotNull { imageEntity ->
-                try {
-                    Uri.parse(imageEntity.imageUri) // Convert String to Uri
-                } catch (e: Exception) {
-                    Log.e("ObservationForm", "Failed to parse URI: ${imageEntity.imageUri}", e)
-                    null
+            if (formulario != null) {
+                codigo = formulario.codigo
+                zona = formulario.zona
+                clima = formulario.clima
+                temporada = formulario.temporada
+                nombreCamara = formulario.nombreCamara
+                placaCamara = formulario.placaCamara
+                placaGuaya = formulario.placaGuaya
+                anchoCamino = formulario.anchoCamino
+                fechaInstalacion = formulario.fechaInstalacion
+                distanciaObjetivo = formulario.distanciaObjetivo
+                alturaLente = formulario.alturaLente
+                observaciones = formulario.observaciones
+                fecha = formulario.fecha
+                editado = formulario.editado
+                location = formulario.latitude?.let { lat ->
+                    formulario.longitude?.let { lon -> lat to lon }
                 }
-            }.toMutableList()
-        } else {
-            Log.e("Formulario6Loading", "NO se pudo obtener el formulario6 con id $formularioId")
+
+                val restoredChecklist: Map<String, Boolean> = Gson().fromJson(
+                    formulario.checklist,
+                    object :
+                        com.google.gson.reflect.TypeToken<Map<String, Boolean>>() {}.type // Explicitly define the type
+                )
+
+                restoredChecklist.forEach { (item, isChecked) ->
+                    checklistState[item] = isChecked // No type mismatch now
+                }
+                val storedImages = appContainer.formulariosRepository
+                    .getImagesByFormulario(formularioId, "Formulario2")
+                    .first()
+                savedImageUris.value = storedImages.mapNotNull {
+                    runCatching { Uri.parse(it.imageUri) }.getOrNull()
+                }.toMutableList()
+            } else {
+                Log.e(
+                    "Formulario6Loading",
+                    "NO se pudo obtener el formulario6 con id $formularioId"
+                )
+            }
         }
     }
     if(location == null){
         LaunchedEffect(Unit) {
-            context.requestLocationPermission()
+            activity.requestLocationPermission()
             if (ubicacion.hasLocationPermission()) {
                 location = ubicacion.obtenerCoordenadas()
                 if (location != null) {
-                    Log.d("ObservationForm", "Location retrieved: Lat=${location!!.first}, Long=${location!!.second}")
+                    location?.let { Log.d("ObservationForm", "Location retrieved: Lat=${it.first}, Long=${it.second}") }
                 } else {
                     Log.d("ObservationForm", "Location is null")
                 }
@@ -196,7 +194,7 @@ fun ObservationFormSeis(navController: NavController, formularioId: Long = 0) {
         content = { paddingValues ->
             if (showCamera) {
                 CameraWindow(
-                    activity = context,
+                    activity = activity,
                     cameraViewModel = cameraViewModel,
                     savedImageUris = savedImageUris, // Pass state
                     onClose = { showCamera = false },
@@ -505,37 +503,44 @@ fun ObservationFormSeis(navController: NavController, formularioId: Long = 0) {
                                         ).withID(formularioId)
 
                                     val currentUserId = userId
+
                                     if (currentUserId != null) {
-                                        runBlocking {
-                                            // Insert regresa su id
-                                            val formId = appContainer.usuariosRepository.insertUserWithFormularioSeis(
-                                                currentUserId.toLong(),
-                                                formulario
-                                            )
-                                            Log.d("ImageDAO", "formId: $formId")
-
-                                            // Borrar todas las fotos en ese reporte
-                                            appContainer.formulariosRepository.deleteImagesByFormulario(
-                                                formularioId = formId,
-                                                formularioType = "Formulario6"
-                                            )
-
-                                            // Agregar todas las imagenes al reporte
-                                            savedImageUris.value.forEach { uri ->
-                                                val image = ImageEntity(
+                                        scope.launch(Dispatchers.IO) {
+                                            try {
+                                                val formId =
+                                                    appContainer.usuariosRepository.insertUserWithFormularioSeis(
+                                                        currentUserId.toLong(),
+                                                        formulario
+                                                    )
+                                                appContainer.formulariosRepository.deleteImagesByFormulario(
                                                     formularioId = formId,
-                                                    formularioType = "Formulario6",
-                                                    imageUri = uri.toString()
+                                                    formularioType = "Formulario6"
                                                 )
-                                                appContainer.formulariosRepository.insertImage(image)
+                                                savedImageUris.value.forEach { uri ->
+                                                    appContainer.formulariosRepository.insertImage(
+                                                        ImageEntity(
+                                                            formularioId = formId,
+                                                            formularioType = "Formulario6",
+                                                            imageUri = uri.toString()
+                                                        )
+                                                    )
+                                                }
+                                                withContext(Dispatchers.Main) {
+                                                    navController.navigate("home")
+                                                }
+                                            } catch (t: Throwable) {
+                                                Log.e(
+                                                    "Formulario6",
+                                                    "Error guardando formulario",
+                                                    t
+                                                )
+                                                withContext(Dispatchers.Main) {
+                                                }
                                             }
                                         }
                                         navController.navigate("home")
                                     }else {
-                                        Log.e(
-                                            "FormularioCinco",
-                                            "No se pudo enviar: ID de usuario no encontrado."
-                                        )
+                                        Log.e("Formulario6", "No se pudo enviar: userId nulo")
                                     }
                                 },
                                 colors = ButtonDefaults.buttonColors(
