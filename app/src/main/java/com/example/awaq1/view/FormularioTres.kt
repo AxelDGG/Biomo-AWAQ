@@ -52,6 +52,9 @@ import com.example.awaq1.data.formularios.ImageEntity
 import com.example.awaq1.data.formularios.Ubicacion
 import com.example.awaq1.data.formularios.local.TokenManager
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -64,13 +67,14 @@ fun PreviewForm3() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
-    val context = LocalContext.current as MainActivity
-    val appContainer = context.container
-    val tokenManager = TokenManager(context)
+    val activity = LocalContext.current as? MainActivity ?: return
+    val appContainer = activity.container
+    val tokenManager = TokenManager(activity)
     val userId by tokenManager.userId.collectAsState(initial = null)
 
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
-    val ubicacion = Ubicacion(context)
+    val ubicacion = Ubicacion(activity)
+    val scope = rememberCoroutineScope()
 
     val cameraViewModel: CameraViewModel = viewModel()
 
@@ -89,55 +93,45 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
     var editado by remember { mutableStateOf("") }
     var ubicaciontxt by remember { mutableStateOf("") }
 
-    if (formularioId != 0L) {
-        val formulario: FormularioTresEntity? = runBlocking {
-            Log.d("Formulario3Loading", "Loading formulario3 with ID $formularioId")
-            appContainer.formulariosRepository.getFormularioTresStream(formularioId).first()
-        }
+    LaunchedEffect(formularioId) {
+        if (formularioId != 0L) {
+            val formulario = appContainer.formulariosRepository
+                .getFormularioTresStream(formularioId).first()
 
-        if (formulario != null) {
-            codigo = formulario.codigo
-            clima = formulario.clima
-            temporada = formulario.temporada
-            seguimiento = formulario.seguimiento
-            cambio = formulario.cambio
-            cobertura = formulario.cobertura
-            tipoCultivo = formulario.tipoCultivo
-            disturbio = formulario.disturbio
-            observaciones = formulario.observaciones
-            fecha = formulario.fecha
-            editado = formulario.editado
-            location = if (formulario.latitude != null && formulario.longitude != null) {
-                Pair(formulario.latitude, formulario.longitude)
-            } else {
-                null
-            }
-            // Load saved images
-            val storedImages = runBlocking {
-                appContainer.formulariosRepository.getImagesByFormulario(formularioId, "Formulario3")
-                    .first() // Fetch the list of ImageEntity for this form
-            }
-            // Convert image URIs from String to Uri and store them in savedImageUris
-            savedImageUris.value = storedImages.mapNotNull { imageEntity ->
-                try {
-                    Uri.parse(imageEntity.imageUri) // Convert String to Uri
-                } catch (e: Exception) {
-                    Log.e("ObservationForm", "Failed to parse URI: ${imageEntity.imageUri}", e)
-                    null
+            if (formulario != null) {
+                codigo = formulario.codigo
+                clima = formulario.clima
+                temporada = formulario.temporada
+                seguimiento = formulario.seguimiento
+                cambio = formulario.cambio
+                cobertura = formulario.cobertura
+                tipoCultivo = formulario.tipoCultivo
+                disturbio = formulario.disturbio
+                observaciones = formulario.observaciones
+                fecha = formulario.fecha
+                editado = formulario.editado
+                location = formulario.latitude?.let { lat ->
+                    formulario.longitude?.let { lon -> lat to lon }
                 }
-            }.toMutableList()
-        } else {
-            Log.e("Formulario3Loading", "NO se pudo obtener el formulario3 con id $formularioId")
+                val storedImages = appContainer.formulariosRepository
+                    .getImagesByFormulario(formularioId, "Formulario3")
+                    .first()
+                savedImageUris.value = storedImages.mapNotNull {
+                    runCatching { Uri.parse(it.imageUri) }.getOrNull()
+                }.toMutableList()
+            } else {
+                Log.e("Formulario1Loading", "No se pudo obtener formulario1 id=$formularioId")
+            }
         }
     }
 
     if(location == null){
         LaunchedEffect(Unit) {
-            context.requestLocationPermission()
+            activity.requestLocationPermission()
             if (ubicacion.hasLocationPermission()) {
                 location = ubicacion.obtenerCoordenadas()
                 if (location != null) {
-                    Log.d("ObservationForm", "Location retrieved: Lat=${location!!.first}, Long=${location!!.second}")
+                    location?.let { Log.d("ObservationForm", "Location retrieved: Lat=${it.first}, Long=${it.second}") }
                 } else {
                     Log.d("ObservationForm", "Location is null")
                 }
@@ -169,7 +163,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
         content = { paddingValues ->
             if (showCamera) {
                 CameraWindow(
-                    activity = context,
+                    activity = activity,
                     cameraViewModel = cameraViewModel,
                     savedImageUris = savedImageUris, // Pass state
                     onClose = { showCamera = false },
@@ -489,36 +483,39 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                     val currentUserId = userId
 
                                     if (currentUserId != null) {
-                                        runBlocking {
-                                            // Insert regresa su id
-                                            val formId = appContainer.usuariosRepository.insertUserWithFormularioTres(
-                                                currentUserId.toLong(),
-                                                formulario
+                                        scope.launch(Dispatchers.IO) {
+                                            try {
+                                                val formId = appContainer.usuariosRepository.insertUserWithFormularioTres(
+                                                    currentUserId.toLong(),
+                                                    formulario
                                             )
-                                            Log.d("ImageDAO", "formId: $formId")
-
-                                            // Borrar todas las fotos en ese reporte
-                                            appContainer.formulariosRepository.deleteImagesByFormulario(
-                                                formularioId = formId,
-                                                formularioType = "Formulario3"
-                                            )
-
-                                            // Agregar todas las imagenes al reporte
-                                            savedImageUris.value.forEach { uri ->
-                                                val image = ImageEntity(
+                                                appContainer.formulariosRepository.deleteImagesByFormulario(
                                                     formularioId = formId,
                                                     formularioType = "Formulario3",
-                                                    imageUri = uri.toString()
                                                 )
-                                                appContainer.formulariosRepository.insertImage(image)
+
+                                                savedImageUris.value.forEach { uri ->
+                                                    appContainer.formulariosRepository.insertImage(
+                                                        ImageEntity(
+                                                            formularioId = formId,
+                                                            formularioType = "Formulario3",
+                                                            imageUri = uri.toString()
+                                                        )
+                                                    )
+                                                }
+
+                                                withContext(Dispatchers.Main) {
+                                                    navController.navigate("home")
+                                                }
+                                            } catch (t: Throwable) {
+                                                Log.e("Formulario3", "Error guardando formulario", t)
+                                                withContext(Dispatchers.Main) {
+                                                }
                                             }
                                         }
                                         navController.navigate("home")
                                     } else {
-                                        Log.e(
-                                            "FormularioCinco",
-                                            "No se pudo enviar: ID de usuario no encontrado."
-                                        )
+                                        Log.e("Formulario3", "No se pudo enviar: userId nulo")
                                     }
                                 },
                                 colors = ButtonDefaults.buttonColors(
