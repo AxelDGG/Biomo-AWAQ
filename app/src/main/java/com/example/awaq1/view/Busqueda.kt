@@ -30,10 +30,14 @@ import kotlinx.coroutines.flow.collect
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Busqueda(navController: NavController) {
-    val context = LocalContext.current
+    val context = LocalContext.current as MainActivity
     // 1. Obtenemos el TokenManager y el repositorio
     val tokenManager = TokenManager(context)
-    val appContainer = (context.applicationContext as MainActivity).container
+    val appContainer = (LocalContext.current as? MainActivity)
+        ?.container ?: run {
+        Log.e("Busqueda", "No se pudo obtener AppContainer desde el Context")
+        return
+    }
     val usuariosRepository = appContainer.usuariosRepository
 
     // 2. Observamos el ID del usuario desde el TokenManager
