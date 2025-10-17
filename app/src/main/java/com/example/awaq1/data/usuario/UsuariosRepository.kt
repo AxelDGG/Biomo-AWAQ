@@ -15,7 +15,9 @@ import com.example.awaq1.data.formularios.FormularioTresDAO
 import com.example.awaq1.data.formularios.FormularioTresEntity
 import com.example.awaq1.data.formularios.FormularioUnoDAO
 import com.example.awaq1.data.formularios.FormularioUnoEntity
+import com.example.awaq1.view.FormInformation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 
 // TODO: getAllFormulario{DOS,TRES,CUATRO}ForUserID(usuarioId: long)
@@ -177,4 +179,34 @@ class UsuariosRepository(
     fun getUsuariosForFormularioSiete(formId: Long): Flow<List<UsuarioFormulario7Entity>> = usuarioFormulario7DAO.getUsuariosForFormulario(formId)
 
     fun getAllFormularioSieteForUserID(usuarioId: Long): Flow<List<FormularioSieteEntity>> = usuarioFormulario7DAO.getAllFormulariosForUserID(usuarioId)
+
+    fun getAllFormsForUser(userId: Long): Flow<List<FormInformation>> {
+        // 1. Agrupamos todos los flows en una sola lista
+        val flows = listOf(
+            getAllFormularioUnoForUserID(userId),
+            getAllFormularioDosForUserID(userId),
+            getAllFormularioTresForUserID(userId),
+            getAllFormularioCuatroForUserID(userId),
+            getAllFormularioCincoForUserID(userId),
+            getAllFormularioSeisForUserID(userId),
+            getAllFormularioSieteForUserID(userId)
+        )
+
+        // La función de transformación ahora recibe un solo argumento: 'results' (un array)
+        return combine(flows) { results ->
+            val combinedList = mutableListOf<FormInformation>()
+
+            // 3. Accedemos a cada lista por su índice y hacemos un 'cast' (conversión de tipo)
+            (results[0] as? List<FormularioUnoEntity>)?.map { combinedList.add(FormInformation(it)) }
+            (results[1] as? List<FormularioDosEntity>)?.map { combinedList.add(FormInformation(it)) }
+            (results[2] as? List<FormularioTresEntity>)?.map { combinedList.add(FormInformation(it)) }
+            (results[3] as? List<FormularioCuatroEntity>)?.map { combinedList.add(FormInformation(it)) }
+            (results[4] as? List<FormularioCincoEntity>)?.map { combinedList.add(FormInformation(it)) }
+            (results[5] as? List<FormularioSeisEntity>)?.map { combinedList.add(FormInformation(it)) }
+            (results[6] as? List<FormularioSieteEntity>)?.map { combinedList.add(FormInformation(it)) }
+
+            combinedList
+        }
+    }
+
 }
