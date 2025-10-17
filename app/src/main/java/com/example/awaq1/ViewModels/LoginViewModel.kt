@@ -28,15 +28,12 @@ class LoginViewModel(
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             try {
-                // Limpiamos los datos de entrada antes de enviarlos
                 val cleanEmail = email.trim()
                 val cleanPassword = password_user.trim()
 
-                // El tipo de '''response''' es Response<AuthResponse>
                 val response = authApiService.signIn(AuthRequest(cleanEmail, cleanPassword))
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    // Usamos el nuevo AuthResponse para acceder a los datos de forma segura
                     if (responseBody?.token != null && responseBody.user != null) {
                         tokenManager.saveSession(
                             token = responseBody.token,
@@ -44,6 +41,27 @@ class LoginViewModel(
                             username = responseBody.user.username,
                             email = responseBody.user.userEmail
                         )
+                        
+                        // Usas el ID de la respuesta para verificar si el usuario existe localmente
+                        val userId = responseBody.user.id
+                        val existingUser = usuariosRepository.getUserById(userId.toLong()).firstOrNull()
+
+                        // Si no existe, lo creas en la base de datos local
+                        if (existingUser == null) {
+                            Log.d("LoginViewModel", "Creando usuario local con ID $userId...")
+                            val newUser = UsuarioEntity(
+                                username = responseBody.user.username,
+                                lastAccess = LocalDateTime.now().toString(),
+                                lastLogin = LocalDateTime.now().toString()
+                            ).apply {
+                                id = userId.toLong() // Asignas el ID que viene del servidor
+                            }
+                            usuariosRepository.insertUser(newUser)
+                        } else {
+                            Log.d("LoginViewModel", "Usuario con ID $userId ya existe. Actualizando login.")
+                            usuariosRepository.updateLastLogin(userId.toLong(), LocalDateTime.now().toString())
+                        }
+
                         _loginState.value = LoginState.Success
                     } else {
                         _loginState.value = LoginState.Error("La respuesta del servidor está incompleta.")
@@ -56,6 +74,7 @@ class LoginViewModel(
             }
         }
     }
+
     fun logout() {
         viewModelScope.launch {
             tokenManager.clearSession()

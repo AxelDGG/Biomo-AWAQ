@@ -503,6 +503,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
 
                                     val currentUserId = userId
 
+                                    Log.d("FormularioDebug", "Intentando guardar formulario. UserID = $currentUserId")
 
                                     if (currentUserId != null) {
                                         scope.launch(Dispatchers.IO) {
