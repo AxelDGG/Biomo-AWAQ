@@ -45,40 +45,14 @@ fun Busqueda(navController: NavController) {
 
     var botonSeleccionado by remember { mutableStateOf(Tab.todos) }
 
-    // 3. Usamos produceState para cargar los formularios solo cuando el userId está disponible
-    val forms1 by produceState<List<FormularioUnoEntity>>(initialValue = emptyList(), userId) {
+    val todosLosFormularios by produceState<List<FormInformation>>(initialValue = emptyList(), userId) {
         if (userId != null) {
-            usuariosRepository.getAllFormularioUnoForUserID(userId!!.toLong()).collect { value = it }
-        }
-    }
-    val forms2 by produceState<List<FormularioDosEntity>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            usuariosRepository.getAllFormularioDosForUserID(userId!!.toLong()).collect { value = it }
-        }
-    }
-    val forms3 by produceState<List<FormularioTresEntity>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            usuariosRepository.getAllFormularioTresForUserID(userId!!.toLong()).collect { value = it }
-        }
-    }
-    val forms4 by produceState<List<FormularioCuatroEntity>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            usuariosRepository.getAllFormularioCuatroForUserID(userId!!.toLong()).collect { value = it }
-        }
-    }
-    val forms5 by produceState<List<FormularioCincoEntity>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            usuariosRepository.getAllFormularioCincoForUserID(userId!!.toLong()).collect { value = it }
-        }
-    }
-    val forms6 by produceState<List<FormularioSeisEntity>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            usuariosRepository.getAllFormularioSeisForUserID(userId!!.toLong()).collect { value = it }
-        }
-    }
-    val forms7 by produceState<List<FormularioSieteEntity>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            usuariosRepository.getAllFormularioSieteForUserID(userId!!.toLong()).collect { value = it }
+            // Llamamos a la nueva función que creaste en el repositorio
+            usuariosRepository.getAllFormsForUser(userId!!.toLong()).collect { forms ->
+                value = forms
+            }
+        } else {
+            value = emptyList() // Limpia la lista si el usuario cierra sesión
         }
     }
 
@@ -95,25 +69,23 @@ fun Busqueda(navController: NavController) {
     var tipoSeleccionado by remember { mutableStateOf<String?>(null) }
 
     fun formulariosFiltradosPorTipo(tab: Tab): List<FormInformation> {
-        val baseList: List<FormInformation> = when (tipoSeleccionado) {
-            null, "Todos los tipos" -> (
-                    forms1.map { FormInformation(it) } +
-                            forms2.map { FormInformation(it) } +
-                            forms3.map { FormInformation(it) } +
-                            forms4.map { FormInformation(it) } +
-                            forms5.map { FormInformation(it) } +
-                            forms6.map { FormInformation(it) } +
-                            forms7.map { FormInformation(it) }
-                    )
-            "Fauna en Transectos" -> forms1.map { FormInformation(it) }
-            "Fauna en Punto de Conteo" -> forms2.map { FormInformation(it) }
-            "Validación de Cobertura" -> forms3.map { FormInformation(it) }
-            "Parcela de Vegetación" -> forms4.map { FormInformation(it) }
-            "Fauna Búsqueda Libre" -> forms5.map { FormInformation(it) }
-            "Cámaras Trampa" -> forms6.map { FormInformation(it) }
-            "Variables Climáticas" -> forms7.map { FormInformation(it) }
+        // Filtra por el tipo de formulario seleccionado en el menú desplegable.
+        // Usamos el campo `formulario` ("form1", "form2", etc.)
+        // en la clase FormInformation para saber de qué tipo es cada uno.
+        val baseList = when (tipoSeleccionado) {
+            null, "Todos los tipos" -> todosLosFormularios
+            "Fauna en Transectos" -> todosLosFormularios.filter { it.formulario == "form1" }
+            "Fauna en Punto de Conteo" -> todosLosFormularios.filter { it.formulario == "form2" }
+            "Validación de Cobertura" -> todosLosFormularios.filter { it.formulario == "form3" }
+            "Parcela de Vegetación" -> todosLosFormularios.filter { it.formulario == "form4" }
+            "Fauna Búsqueda Libre" -> todosLosFormularios.filter { it.formulario == "form5" }
+            "Cámaras Trampa" -> todosLosFormularios.filter { it.formulario == "form6" }
+            "Variables Climáticas" -> todosLosFormularios.filter { it.formulario == "form7" }
             else -> emptyList()
         }
+
+        // Ahora, sobre esa lista filtrada, aplicamos el filtro de las pestañas
+        // (Todos, Incompletos, Completos).
         return when (tab) {
             Tab.todos -> baseList
             Tab.guardados -> baseList.filter { !it.completo }

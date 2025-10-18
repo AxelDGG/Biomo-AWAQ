@@ -22,7 +22,9 @@ data class AuthResponse(
     @SerializedName("user") val user: User? // El objeto de usuario que faltaba
 )
 
-
+data class FormularioResponse(
+    @SerializedName("message") val message: String,
+)
 
 /**
  * Respuesta del endpoint de OBTENER PERFIL.

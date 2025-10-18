@@ -3,15 +3,23 @@ package com.example.awaq1.data
 import android.content.Context
 import com.example.awaq1.data.formularios.FormulariosRepository
 import com.example.awaq1.data.formularios.OfflineFormulariosRepository
+import com.example.awaq1.data.formularios.remote.FormsRemoteRepository
 import com.example.awaq1.data.usuario.UsuariosRepository
+import com.example.awaq1.data.formularios.local.TokenManager
+import com.example.awaq1.data.formularios.remote.AuthApiService
+import com.example.awaq1.data.formularios.remote.RetroFitClient
 
 // Esto luego lo extendemos con los otros repositorios
 interface AppContainer {
     val formulariosRepository: FormulariosRepository
+    val formulariosRemoteRepository: FormsRemoteRepository
     val usuariosRepository: UsuariosRepository
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
+    private val tokenManager by lazy{TokenManager(context)}
+    private val apiService by lazy{ RetroFitClient.create(tokenManager) }
+
     override val formulariosRepository: FormulariosRepository by lazy {
         OfflineFormulariosRepository(
             formularioUnoDAO = FormulariosDatabase.getDatabase(context).formulario1Dao(),
@@ -43,6 +51,10 @@ class AppDataContainer(private val context: Context) : AppContainer {
             formularioSeisDAO = FormulariosDatabase.getDatabase(context).formulario6Dao(),
             formularioSieteDAO = FormulariosDatabase.getDatabase(context).formulario7Dao(),
         )
+    }
+
+    override val formulariosRemoteRepository: FormsRemoteRepository by lazy{
+        FormsRemoteRepository(apiService as AuthApiService)
     }
 }
 

@@ -103,9 +103,9 @@ fun LogIn(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (viewpassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image = if (viewpassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                    val image = if (viewpassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                     Icon(
                         imageVector = image,
                         contentDescription = if (viewpassword) "Ocultar contraseña" else "Mostrar contraseña",

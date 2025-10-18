@@ -129,5 +129,5 @@ configurations.all {
         // Force compatible versions for AndroidX testing dependencies
         force("androidx.test.ext:junit:1.1.5")
         force("androidx.test.espresso:espresso-core:3.5.0")
-    }
+     }
 }
