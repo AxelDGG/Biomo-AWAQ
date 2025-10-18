@@ -493,8 +493,8 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             numeroIndividuos = numeroIndividuos,
                                             tipoObservacion = tipoObservacion,
                                             observaciones = observaciones,
-                                            latitude = location?.first,
-                                            longitude = location?.second,
+                                            latitude = location?.first ?: 0.0,
+                                            longitude = location?.second ?: 0.0,
                                             fecha = fecha,
                                             editado = editado
                                         ).withID(formularioId)
