@@ -496,10 +496,8 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             latitude = location?.first,
                                             longitude = location?.second,
                                             fecha = fecha,
-                                            editado
-                                            = editado
+                                            editado = editado
                                         ).withID(formularioId)
-                                    // Guardar en base de datos, vinculado al usuario
 
                                     val currentUserId = userId
 
@@ -508,10 +506,12 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                     if (currentUserId != null) {
                                         scope.launch(Dispatchers.IO) {
                                             try {
+                                                // Guardar localmente
                                                 val formId = appContainer.usuariosRepository.insertUserWithFormularioUno(
                                                     currentUserId.toLong(),
                                                     formulario
                                                 )
+
                                                 appContainer.formulariosRepository.deleteImagesByFormulario(
                                                     formularioId = formId,
                                                     formularioType = "Formulario1"
@@ -526,17 +526,22 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                                     )
                                                 }
 
-                                                withContext(Dispatchers.Main) {
+                                                // Enviar formulario remoto
+                                                val result = appContainer.formulariosRemoteRepository.enviarFormularioUno(formulario)
+                                                if (result.isSuccess) {
                                                     navController.navigate("home")
+                                                } else {
+                                                    val error = result.exceptionOrNull()
+                                                    // Mostrar error?.message o loguear
                                                 }
+
                                             } catch (t: Throwable) {
-                                                Log.e("Formulario1", "Error guardando formulario", t)
+                                                Log.e("Formulario1", "Error guardando o enviando formulario", t)
                                                 withContext(Dispatchers.Main) {
-                                                    // aquí puedes mostrar Snackbar/Toast si quieres
+                                                    // Aquí puedes mostrar un Snackbar o Toast de error
                                                 }
                                             }
                                         }
-                                        navController.navigate("home")
                                     } else {
                                         Log.e("Formulario1", "No se pudo enviar: userId nulo")
                                     }
@@ -556,6 +561,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                     )
                                 )
                             }
+
                         }
                     }
                 }

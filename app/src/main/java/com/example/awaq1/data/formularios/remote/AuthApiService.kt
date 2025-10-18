@@ -42,6 +42,7 @@ interface AuthApiService {
     @POST("/api/biomo/forms/7/submission")
     suspend fun sendFormSiete(@Body formularioEntities: FormularioSieteEntity): Response<FormularioResponse>
 
-   @POST("/api/biomo/users/logout")
-   suspend fun logout()
+    @POST("/api/biomo/users/logout")
+    suspend fun logout(): Response<Unit>
+
 }

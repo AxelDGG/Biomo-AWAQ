@@ -2,6 +2,7 @@ package com.example.awaq1.data.formularios
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,19 +11,19 @@ import java.util.*
 // Fauna en Transectos
 @Entity(tableName = "Formulario1")
 data class FormularioUnoEntity(
-    var transecto: String,
-    var clima: String,
-    var temporada: String,
-    var tipoAnimal: String,
-    var nombreComun: String,
-    var nombreCientifico: String,
-    var numeroIndividuos: String,
-    var tipoObservacion: String,
-    var observaciones: String,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
-    val fecha: String,
-    val editado: String,
+    @SerializedName("transecto")var transecto: String,
+    @SerializedName("clima")var clima: String,
+    @SerializedName("temporada")var temporada: String,
+    @SerializedName("tipoanimal")var tipoAnimal: String,
+    @SerializedName("nombrecomun")var nombreComun: String,
+    @SerializedName("nombrecientifico") var nombreCientifico: String,
+    @SerializedName("numeroindividuos")var numeroIndividuos: String,
+    @SerializedName("tipoobservacion")var tipoObservacion: String,
+    @SerializedName("observaciones")var observaciones: String,
+    @SerializedName("latitude")val latitude: Double? = null,
+    @SerializedName("longitude")val longitude: Double? = null,
+    @SerializedName("fecha")val fecha: String,
+    @SerializedName("editado")val editado: String,
 ) {
     // Excluye id de las funciones autogeneradas (equals, copy, hashCode...)
     // https://kotlinlang.org/docs/data-classes.html#properties-declared-in-the-class-body
