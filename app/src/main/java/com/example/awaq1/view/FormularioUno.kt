@@ -538,11 +538,14 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             } catch (t: Throwable) {
                                                 Log.e("Formulario1", "Error guardando o enviando formulario", t)
                                                 withContext(Dispatchers.Main) {
-                                                    // Aquí puedes mostrar un Snackbar o Toast de error
                                                 }
                                             }
                                         }
+                                        /*  Reimplementar la funcion de navegacion al guardado terminando las pruebas con el formulario1
+
                                         navController.navigate("home")
+
+                                         */
                                     } else {
                                         Log.e("Formulario1", "No se pudo enviar: userId nulo")
                                     }
