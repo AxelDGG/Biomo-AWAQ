@@ -137,8 +137,8 @@ fun Home(navController: NavController) {
     val forms7: List<FormularioSieteEntity> by (if (userIdLong != null) usuariosRepository.getAllFormularioSieteForUserID(userIdLong) else emptyFlow7)
         .collectAsState(initial = emptyList())
 
-    val count by appContainer.formulariosRepository.getAllFormulariosCount()
-        .collectAsState(initial = 0)
+    val count = forms1.size + forms2.size + forms3.size + forms4.size +
+            forms5.size + forms6.size + forms7.size
 
     val incompleteCount = forms1.count { !it.esCompleto() } + forms2.count { !it.esCompleto() } +
             forms3.count { !it.esCompleto() } + forms4.count { !it.esCompleto() } +
