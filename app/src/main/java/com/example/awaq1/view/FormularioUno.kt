@@ -542,6 +542,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                                 }
                                             }
                                         }
+                                        navController.navigate("home")
                                     } else {
                                         Log.e("Formulario1", "No se pudo enviar: userId nulo")
                                     }
