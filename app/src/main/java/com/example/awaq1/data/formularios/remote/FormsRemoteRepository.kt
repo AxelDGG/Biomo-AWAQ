@@ -1,17 +1,15 @@
 package com.example.awaq1.data.formularios.remote
 
 import com.example.awaq1.data.formularios.*
-import com.example.awaq1.data.formularios.remote.AuthApiService
+import com.example.awaq1.data.formularios.remote.dto.toSubmission
 import retrofit2.HttpException
 import java.io.IOException
-import com.example.awaq1.data.formularios.remote.dto.toSubmission
-
 
 class FormsRemoteRepository(
     private val authApiService: AuthApiService
 ) {
 
-    // metodos internos que usan safeApiCall y lanzan excepciones
+    // --- Helper genérico para llamadas Retrofit que devuelven Response<T> y lanzan errores claros
     private suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): T {
         return try {
             val response = apiCall()
@@ -27,57 +25,66 @@ class FormsRemoteRepository(
         }
     }
 
-    // Ejemplo de métodos internos que pueden lanzar excepción
+    // --- Helper para enviar cualquier formulario (1..7) con el mismo endpoint
+    private suspend fun enviar(formKey: String, body: Map<String, @JvmSuppressWildcards Any?>): Result<Unit> =
+        runCatching {
+            val resp = authApiService.sendForm(
+                tenant = "biomo",
+                formKey = formKey,
+                body = body
+            )
+            if (!resp.isSuccessful) {
+                val text = resp.errorBody()?.string()
+                throw IllegalStateException("HTTP ${resp.code()} ${resp.message()} :: ${text ?: "sin detalle"}")
+            }
+        }
 
-    suspend fun sendFormDos(form: FormularioDosEntity) = safeApiCall {
-        authApiService.sendFormDos(form)
-    }
+    // -----------------------
+    // Envíos por formulario
+    // -----------------------
 
     suspend fun enviarFormularioUno(
         form: FormularioUnoEntity,
-        userIdDelToken: Int? = null // pásalo solo si el backend lo exige
-    ): Result<Unit> = runCatching {
+        userIdDelToken: Int? = null
+    ): Result<Unit> {
         val payload = form.toSubmission(userIdDelToken)
-        val resp = authApiService.sendFormUno(
-            tenant = "biomo",
-            formKey = "1",
-            body = payload
-        )
-        if (!resp.isSuccessful) {
-            val text = resp.errorBody()?.string()
-            throw IllegalStateException("HTTP ${resp.code()} ${resp.message()} :: ${text ?: "sin detalle"}")
-        }
+        return enviar("1", payload)
     }
 
-    suspend fun sendFormUno(form: FormularioUnoEntity, userIdDelToken: Int? = null) =
-        enviarFormularioUno(form, userIdDelToken)
-
-    suspend fun enviarFormularioDos(form: FormularioDosEntity): Result<Unit> {
-        return try {
-            sendFormDos(form)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    suspend fun enviarFormularioDos(form: FormularioDosEntity, userIdDelToken: Int?): Result<Unit> {
+        val body = form.toSubmission(userIdDelToken)
+        return enviar("2", body)
     }
 
-    // ... otros métodos públicos similares para otros formularios ...
-
-    // Example logout method using safeApiCall
-    suspend fun logout() {
-        try {
-            val response = authApiService.logout()
-            if (!response.isSuccessful) {
-                throw HttpException(response)
-            }
-        } catch (e: IOException) {
-            throw Exception("Error de red o sin conexión", e)
-        } catch (e: HttpException) {
-            throw Exception("Error HTTP ${e.code()}: ${e.message()}", e)
-        }
+    suspend fun enviarFormularioTres(form: FormularioTresEntity, userIdDelToken: Int?): Result<Unit> {
+        val body = form.toSubmission(userIdDelToken)
+        return enviar("3", body)
     }
 
-    // Métodos de autenticación si los usas dentro del flujo de formularios
+    suspend fun enviarFormularioCuatro(form: FormularioCuatroEntity, userIdDelToken: Int?): Result<Unit> {
+        val body = form.toSubmission(userIdDelToken)
+        return enviar("4", body)
+    }
+
+    suspend fun enviarFormularioCinco(form: FormularioCincoEntity, userIdDelToken: Int?): Result<Unit> {
+        val body = form.toSubmission(userIdDelToken)
+        return enviar("5", body)
+    }
+
+    suspend fun enviarFormularioSeis(form: FormularioSeisEntity, userIdDelToken: Int?): Result<Unit> {
+        val body = form.toSubmission(userIdDelToken)
+        return enviar("6", body)
+    }
+
+    suspend fun enviarFormularioSiete(form: FormularioSieteEntity, userIdDelToken: Int?): Result<Unit> {
+        val body = form.toSubmission(userIdDelToken)
+        return enviar("7", body)
+    }
+
+    // -----------------------
+    // Auth (si los usas aquí)
+    // -----------------------
+
     suspend fun signIn(request: AuthRequest) = safeApiCall {
         authApiService.signIn(request)
     }
@@ -85,5 +92,15 @@ class FormsRemoteRepository(
     suspend fun getProfile() = safeApiCall {
         authApiService.getProfile()
     }
-}
 
+    suspend fun logout() {
+        try {
+            val response = authApiService.logout()
+            if (!response.isSuccessful) throw HttpException(response)
+        } catch (e: IOException) {
+            throw Exception("Error de red o sin conexión", e)
+        } catch (e: HttpException) {
+            throw Exception("Error HTTP ${e.code()}: ${e.message()}", e)
+        }
+    }
+}

@@ -18,44 +18,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.awaq1.MainActivity
-import com.example.awaq1.data.formularios.local.TokenManager
+import com.example.awaq1.data.AppContainer
 import com.example.awaq1.data.formularios.*
+import com.example.awaq1.data.formularios.local.TokenManager
 import com.example.awaq1.navigator.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Busqueda(navController: NavController) {
     val context = LocalContext.current as MainActivity
-    // 1. Obtenemos el TokenManager y el repositorio
-    val tokenManager = TokenManager(context)
-    val appContainer = (LocalContext.current as? MainActivity)
-        ?.container ?: run {
+
+    // TokenManager y contenedor de dependencias
+    val tokenManager = remember { TokenManager(context) }
+    val appContainer = (LocalContext.current as? MainActivity)?.container ?: run {
         Log.e("Busqueda", "No se pudo obtener AppContainer desde el Context")
         return
     }
-    val usuariosRepository = appContainer.usuariosRepository
 
-    // 2. Observamos el ID del usuario desde el TokenManager
+    val scope = rememberCoroutineScope()
+
+    // userId proveniente del token (puede ser null)
     val userId by tokenManager.userId.collectAsState(initial = null)
+    val userIdInt = remember(userId) { userId?.toIntOrNull() }
 
+    // pestañas Todos / Incompletos / Completos
     var botonSeleccionado by remember { mutableStateOf(Tab.todos) }
 
+    // flujo de todos los formularios del usuario
     val todosLosFormularios by produceState<List<FormInformation>>(initialValue = emptyList(), userId) {
-        if (userId != null) {
-            // Llamamos a la nueva función que creaste en el repositorio
-            usuariosRepository.getAllFormsForUser(userId!!.toLong()).collect { forms ->
-                value = forms
-            }
+        val uid = userId?.toLongOrNull()
+        value = if (uid != null) {
+            appContainer.usuariosRepository.getAllFormsForUser(uid).firstOrNull().orEmpty()
         } else {
-            value = emptyList() // Limpia la lista si el usuario cierra sesión
+            emptyList()
         }
     }
 
+    // opciones de filtrado por tipo
     val tiposFormulario = listOf(
         "Todos los tipos",
         "Fauna en Transectos",
@@ -68,10 +77,8 @@ fun Busqueda(navController: NavController) {
     )
     var tipoSeleccionado by remember { mutableStateOf<String?>(null) }
 
+    // filtro combinado por tipo (drop-down) y por tab (Todos/Incompletos/Completos)
     fun formulariosFiltradosPorTipo(tab: Tab): List<FormInformation> {
-        // Filtra por el tipo de formulario seleccionado en el menú desplegable.
-        // Usamos el campo `formulario` ("form1", "form2", etc.)
-        // en la clase FormInformation para saber de qué tipo es cada uno.
         val baseList = when (tipoSeleccionado) {
             null, "Todos los tipos" -> todosLosFormularios
             "Fauna en Transectos" -> todosLosFormularios.filter { it.formulario == "form1" }
@@ -83,9 +90,6 @@ fun Busqueda(navController: NavController) {
             "Variables Climáticas" -> todosLosFormularios.filter { it.formulario == "form7" }
             else -> emptyList()
         }
-
-        // Ahora, sobre esa lista filtrada, aplicamos el filtro de las pestañas
-        // (Todos, Incompletos, Completos).
         return when (tab) {
             Tab.todos -> baseList
             Tab.guardados -> baseList.filter { !it.completo }
@@ -108,9 +112,7 @@ fun Busqueda(navController: NavController) {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFAED581))
             )
         },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -122,6 +124,7 @@ fun Busqueda(navController: NavController) {
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
+                // tabs
                 Row(
                     modifier = Modifier.padding(bottom = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -132,7 +135,7 @@ fun Busqueda(navController: NavController) {
                     ) {
                         Text(
                             text = "Todos",
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = if (botonSeleccionado == Tab.todos) Color.Black else Color.Gray
@@ -144,7 +147,7 @@ fun Busqueda(navController: NavController) {
                     ) {
                         Text(
                             text = "Incompletos",
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = if (botonSeleccionado == Tab.guardados) Color.Black else Color.Gray
@@ -156,19 +159,24 @@ fun Busqueda(navController: NavController) {
                     ) {
                         Text(
                             text = "Completos",
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = if (botonSeleccionado == Tab.subidos) Color.Black else Color.Gray
                         )
                     }
                 }
+
+                // drop-down por tipo
                 OrdenarPorFormularioMenu(
                     tiposFormulario = tiposFormulario,
                     tipoSeleccionado = tipoSeleccionado,
                     onTipoSelected = { tipoSeleccionado = it }
                 )
+
                 Spacer(modifier = Modifier.height(10.dp))
+
+                // grid de tarjetas
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -179,8 +187,14 @@ fun Busqueda(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     items(count = 1) { Spacer(modifier = Modifier.height(10.dp)) }
-                    items(formulariosFiltradosPorTipo(botonSeleccionado)) { formCard ->
-                        formCard.verCard(navController)
+                    items(formulariosFiltradosPorTipo(botonSeleccionado)) { formInfo ->
+                        FormCard(
+                            formInfo = formInfo,
+                            navController = navController,
+                            appContainer = appContainer,
+                            scope = scope,
+                            userId = userIdInt
+                        )
                     }
                 }
             }
@@ -208,10 +222,7 @@ fun OrdenarPorFormularioMenu(
         ) {
             Text(label)
         }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             tiposFormulario.forEach { tipo ->
                 DropdownMenuItem(
                     text = { Text(tipo) },
@@ -225,9 +236,7 @@ fun OrdenarPorFormularioMenu(
     }
 }
 
-enum class Tab {
-    todos, guardados, subidos
-}
+enum class Tab { todos, guardados, subidos }
 
 data class FormInformation(
     val tipo: String,
@@ -236,16 +245,16 @@ data class FormInformation(
     val primerContenido: String,
     val segundoTag: String,
     val segundoContenido: String,
-    val formulario: String,
+    val formulario: String,   // "form1".."form7"
     val formId: Long,
     val fechaCreacion: String,
     val fechaEdicion: String,
     val completo: Boolean
 ) {
     constructor(formulario: FormularioUnoEntity) : this(
-        tipo = "Transecto", formulario.transecto,
-        primerTag = "Tipo", formulario.tipoAnimal,
-        segundoTag = "Nombre", formulario.nombreComun,
+        tipo = "Transecto", valorIdentificador = formulario.transecto,
+        primerTag = "Tipo", primerContenido = formulario.tipoAnimal,
+        segundoTag = "Nombre", segundoContenido = formulario.nombreComun,
         formulario = "form1",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -253,9 +262,9 @@ data class FormInformation(
         completo = formulario.esCompleto()
     )
     constructor(formulario: FormularioDosEntity) : this(
-        tipo = "Zona", formulario.zona,
-        primerTag = "Tipo", formulario.tipoAnimal,
-        segundoTag = "Nombre", formulario.nombreComun,
+        tipo = "Zona", valorIdentificador = formulario.zona,
+        primerTag = "Tipo", primerContenido = formulario.tipoAnimal,
+        segundoTag = "Nombre", segundoContenido = formulario.nombreComun,
         formulario = "form2",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -263,9 +272,9 @@ data class FormInformation(
         completo = formulario.esCompleto()
     )
     constructor(formulario: FormularioTresEntity) : this(
-        tipo = "Código", formulario.codigo,
-        primerTag = "Seguimiento", siONo(formulario.seguimiento),
-        segundoTag = "Cambio", siONo(formulario.cambio),
+        tipo = "Código", valorIdentificador = formulario.codigo,
+        primerTag = "Seguimiento", primerContenido = siONo(formulario.seguimiento),
+        segundoTag = "Cambio", segundoContenido = siONo(formulario.cambio),
         formulario = "form3",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -273,9 +282,9 @@ data class FormInformation(
         completo = formulario.esCompleto()
     )
     constructor(formulario: FormularioCuatroEntity) : this(
-        tipo = "Código", formulario.codigo,
-        primerTag = "Cuad. A", formulario.quad_a,
-        segundoTag = "Cuad. B", formulario.quad_b,
+        tipo = "Código", valorIdentificador = formulario.codigo,
+        primerTag = "Cuad. A", primerContenido = formulario.quad_a,
+        segundoTag = "Cuad. B", segundoContenido = formulario.quad_b,
         formulario = "form4",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -283,9 +292,9 @@ data class FormInformation(
         completo = formulario.esCompleto()
     )
     constructor(formulario: FormularioCincoEntity) : this(
-        tipo = "Zona", formulario.zona,
-        primerTag = "Tipo", formulario.tipoAnimal,
-        segundoTag = "Nombre", formulario.nombreComun,
+        tipo = "Zona", valorIdentificador = formulario.zona,
+        primerTag = "Tipo", primerContenido = formulario.tipoAnimal,
+        segundoTag = "Nombre", segundoContenido = formulario.nombreComun,
         formulario = "form5",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -293,9 +302,9 @@ data class FormInformation(
         completo = formulario.esCompleto()
     )
     constructor(formulario: FormularioSeisEntity) : this(
-        tipo = "Codigo", formulario.codigo,
-        primerTag = "Zona", formulario.zona,
-        segundoTag = "PlacaCamara", formulario.placaCamara,
+        tipo = "Codigo", valorIdentificador = formulario.codigo,
+        primerTag = "Zona", primerContenido = formulario.zona,
+        segundoTag = "PlacaCamara", segundoContenido = formulario.placaCamara,
         formulario = "form6",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -303,9 +312,9 @@ data class FormInformation(
         completo = formulario.esCompleto()
     )
     constructor(formulario: FormularioSieteEntity) : this(
-        tipo = "Zona", formulario.zona,
-        primerTag = "Pluviosidad", formulario.pluviosidad,
-        segundoTag = "TempMax", formulario.temperaturaMaxima,
+        tipo = "Zona", valorIdentificador = formulario.zona,
+        primerTag = "Pluviosidad", primerContenido = formulario.pluviosidad,
+        segundoTag = "TempMax", segundoContenido = formulario.temperaturaMaxima,
         formulario = "form7",
         formId = formulario.id,
         fechaCreacion = formulario.fecha,
@@ -314,7 +323,6 @@ data class FormInformation(
     )
 
     fun editFormulario(navController: NavController) {
-        Log.d("HOME_CLICK_ACTION", "Click en $this")
         when (formulario) {
             "form1" -> navController.navigate(route = FormUnoID(formId))
             "form2" -> navController.navigate(route = FormDosID(formId))
@@ -323,115 +331,147 @@ data class FormInformation(
             "form5" -> navController.navigate(route = FormCincoID(formId))
             "form6" -> navController.navigate(route = FormSeisID(formId))
             "form7" -> navController.navigate(route = FormSieteID(formId))
-            else -> throw Exception("CARD NAVIGATION NOT IMPLEMENTED FOR $formulario")
+            else -> Log.w("Busqueda", "CARD NAV NOT IMPLEMENTED FOR $formulario")
         }
     }
-
-    @Composable
-    fun verCard(navController: NavController, modifier: Modifier = Modifier) {
-        // NUEVO: estado para mostrar el dialogo de enviar cuando es completo
-        var showEnviarDialog by remember { mutableStateOf(false) }
-
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding()
-                .clickable {
-                    if (completo) {
-                        // NO abrir el formulario: mostrar opciones Atrás / Enviar
-                        showEnviarDialog = true
-                    } else {
-                        // Incompleto: abrir para editar como siempre
-                        this.editFormulario(navController)
-                    }
-                },
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth()
-                    .padding(end = 40.dp),
-                Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = "$tipo: $valorIdentificador",
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-                    Row {
-                        if (completo) {
-                            Icon(
-                                imageVector = Icons.Rounded.CheckCircle,
-                                contentDescription = null,
-                                tint = Color.Green
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Rounded.Warning,
-                                contentDescription = null,
-                                tint = Color(237, 145, 33)
-                            )
-                        }
-                        Spacer(modifier = Modifier.size(10.dp, 10.dp))
-                        Text("Creado: $fechaCreacion")
-                    }
-                }
-                Column {
-                    Text(
-                        text = "$primerTag: $primerContenido",
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = "$segundoTag: $segundoContenido",
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Black
-                    )
-                }
-            }
-        }
-
-        // NUEVO: Dialogo con opciones Atrás / Enviar (placeholder)
-        if (showEnviarDialog) {
-            AlertDialog(
-                onDismissRequest = { showEnviarDialog = false },
-                title = { Text("Formulario completo") },
-                text = { Text("Este formulario ya está completo. ¿Desea enviarlo ahora?") },
-                dismissButton = {
-                    TextButton(onClick = { showEnviarDialog = false },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent, // 💚 Verde personalizado
-                            contentColor = Color(0xFF4E7029))
-                    ) {
-                        Text("Atrás")
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showEnviarDialog = false
-                            // TODO: aquí conectamos el flujo de envío real
-                            // Por ahora, placeholder:
-                            // navController.navigate(EnviarFormID(formulario, formId))
-                            // o lanza una corrutina de 'upload' cuando lo definamos.
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF4E7029), // 💚 Verde personalizado
-                            contentColor = Color.White)
-                        ) { Text("Enviar") }
-                }
-            )
-        }
-    }
-
 }
 
+@Composable
+fun FormCard(
+    formInfo: FormInformation,
+    navController: NavController,
+    appContainer: AppContainer,
+    scope: CoroutineScope,
+    userId: Int?,
+    modifier: Modifier = Modifier
+) {
+    var showEnviarDialog by remember { mutableStateOf(false) }
 
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                if (formInfo.completo) {
+                    // mostrar dialogo para enviar
+                    showEnviarDialog = true
+                } else {
+                    // abrir para editar
+                    formInfo.editFormulario(navController)
+                }
+            },
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth()
+                .padding(end = 40.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = "${formInfo.tipo}: ${formInfo.valorIdentificador}",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Row {
+                    if (formInfo.completo) {
+                        Icon(Icons.Rounded.CheckCircle, contentDescription = null, tint = Color.Green)
+                    } else {
+                        Icon(Icons.Rounded.Warning, contentDescription = null, tint = Color(237, 145, 33))
+                    }
+                    Spacer(modifier = Modifier.size(10.dp, 10.dp))
+                    Text("Creado: ${formInfo.fechaCreacion}")
+                }
+            }
+            Column {
+                Text(text = "${formInfo.primerTag}: ${formInfo.primerContenido}", fontSize = 25.sp)
+                Text(text = "${formInfo.segundoTag}: ${formInfo.segundoContenido}", fontSize = 25.sp)
+            }
+        }
+    }
+
+    if (showEnviarDialog) {
+        AlertDialog(
+            onDismissRequest = { showEnviarDialog = false },
+            title = { Text("Formulario completo") },
+            text = { Text("Este formulario ya está completo. ¿Desea enviarlo ahora?") },
+            dismissButton = {
+                TextButton(
+                    onClick = { showEnviarDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color(0xFF4E7029)
+                    )
+                ) { Text("Atrás") }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showEnviarDialog = false
+
+                        scope.launch {
+                            // helper generico cargar -> enviar -> navegar
+                            suspend fun <T> cargarYEnviar(
+                                cargar: suspend () -> T?,
+                                enviar: suspend (T, Int?) -> Result<Unit>
+                            ) {
+                                val entidad = withContext(Dispatchers.IO) { cargar() }
+                                if (entidad == null) {
+                                    Log.e("Busqueda", "No se encontró el formulario id=${formInfo.formId}")
+                                    return
+                                }
+                                val r = withContext(Dispatchers.IO) { enviar(entidad, userId) }
+                                if (r.isSuccess) {
+                                    navController.navigate("home") { launchSingleTop = true }
+                                } else {
+                                    Log.e("Busqueda", "Falló envío: ${r.exceptionOrNull()?.message}")
+                                }
+                            }
+
+                            when (formInfo.formulario) {
+                                "form1" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioUnoStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioUno(f, uid) }
+                                )
+                                "form2" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioDosStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioDos(f, uid) }
+                                )
+                                "form3" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioTresStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioTres(f, uid) }
+                                )
+                                "form4" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioCuatroStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioCuatro(f, uid) }
+                                )
+                                "form5" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioCincoStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioCinco(f, uid) }
+                                )
+                                "form6" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioSeisStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioSeis(f, uid) }
+                                )
+                                "form7" -> cargarYEnviar(
+                                    cargar = { appContainer.formulariosRepository.getFormularioSieteStream(formInfo.formId).firstOrNull() },
+                                    enviar  = { f, uid -> appContainer.formulariosRemoteRepository.enviarFormularioSiete(f, uid) }
+                                )
+                                else -> Log.w("Busqueda", "Formulario desconocido: ${formInfo.formulario}")
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4E7029),
+                        contentColor = Color.White
+                    )
+                ) { Text("Enviar") }
+            }
+        )
+    }
+}
 
 private fun siONo(boolean: Boolean): String = if (boolean) "Sí" else "No"
