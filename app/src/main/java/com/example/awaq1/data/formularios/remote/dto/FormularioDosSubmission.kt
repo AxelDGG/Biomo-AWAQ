@@ -1,30 +1,30 @@
 package com.example.awaq1.data.formularios.remote.dto
 
 import com.google.gson.annotations.SerializedName
-import com.example.awaq1.data.formularios.FormularioUnoEntity
+import com.example.awaq1.data.formularios.FormularioDosEntity
 
-data class FormularioUnoSubmission(
-    @SerializedName("transecto") val transecto: String,
+
+data class FormularioDosSubmission(
+    @SerializedName("zona") val zona: String,
     @SerializedName("clima") val clima: String,
     @SerializedName("temporada") val temporada: String,
     @SerializedName("tipoanimal") val tipoanimal: String,
     @SerializedName("nombrecomun") val nombrecomun: String,
     @SerializedName("nombrecientifico") val nombrecientifico: String,
-    // el backend lo quiere como String
-    @SerializedName("numeroindividuos") val numeroindividuos: String?,
+    @SerializedName("numeroindividuos") val numeroindividuos: String?, // 👈 string como en backend
     @SerializedName("tipoobservacion") val tipoobservacion: String,
+    @SerializedName("alturaobservacion") val alturaobservacion: String,
     @SerializedName("observaciones") val observaciones: String,
     @SerializedName("latitude") val latitude: Double?,
     @SerializedName("longitude") val longitude: Double?,
     @SerializedName("fecha") val fecha: String,
     @SerializedName("editado") val editado: String,
-    // solo si el backend no lo inyecta via JWT:
-    @SerializedName("id_usuario") val idUsuario: Int? = null
+    @SerializedName("id_usuario") val idUsuario: Int? = null // 👈 obligatorio (backend NOT NULL)
 )
 
-fun FormularioUnoEntity.toSubmission(idUsuarioToken: Int? = null): FormularioUnoSubmission =
-    FormularioUnoSubmission(
-        transecto = transecto,
+fun FormularioDosEntity.toSubmission(idUsuarioToken: Int? = null): FormularioDosSubmission =
+    FormularioDosSubmission(
+        zona = zona,
         clima = clima,
         temporada = temporada,
         tipoanimal = tipoAnimal,
@@ -32,6 +32,7 @@ fun FormularioUnoEntity.toSubmission(idUsuarioToken: Int? = null): FormularioUno
         nombrecientifico = nombreCientifico,
         numeroindividuos = numeroIndividuos?.trim()?.ifEmpty { null },
         tipoobservacion = tipoObservacion,
+        alturaobservacion = alturaObservacion,
         observaciones = observaciones,
         latitude = latitude,
         longitude = longitude,
