@@ -4,6 +4,8 @@ import com.example.awaq1.data.formularios.*
 import com.example.awaq1.data.formularios.remote.AuthApiService
 import retrofit2.HttpException
 import java.io.IOException
+import com.example.awaq1.data.formularios.remote.dto.toSubmission
+
 
 class FormsRemoteRepository(
     private val authApiService: AuthApiService
@@ -26,22 +28,29 @@ class FormsRemoteRepository(
     }
 
     // Ejemplo de métodos internos que pueden lanzar excepción
-    suspend fun sendFormUno(form: FormularioUnoEntity) = safeApiCall {
-        authApiService.sendFormUno(form)
-    }
 
     suspend fun sendFormDos(form: FormularioDosEntity) = safeApiCall {
         authApiService.sendFormDos(form)
     }
 
-    suspend fun enviarFormularioUno(form: FormularioUnoEntity): Result<Unit> {
-        return try {
-            sendFormUno(form)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+    suspend fun enviarFormularioUno(
+        form: FormularioUnoEntity,
+        userIdDelToken: Int? = null // pásalo solo si el backend lo exige
+    ): Result<Unit> = runCatching {
+        val payload = form.toSubmission(userIdDelToken)
+        val resp = authApiService.sendFormUno(
+            tenant = "biomo",
+            formKey = "1",
+            body = payload
+        )
+        if (!resp.isSuccessful) {
+            val text = resp.errorBody()?.string()
+            throw IllegalStateException("HTTP ${resp.code()} ${resp.message()} :: ${text ?: "sin detalle"}")
         }
     }
+
+    suspend fun sendFormUno(form: FormularioUnoEntity, userIdDelToken: Int? = null) =
+        enviarFormularioUno(form, userIdDelToken)
 
     suspend fun enviarFormularioDos(form: FormularioDosEntity): Result<Unit> {
         return try {

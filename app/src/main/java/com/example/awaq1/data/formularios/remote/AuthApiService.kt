@@ -7,10 +7,20 @@ import com.example.awaq1.data.formularios.FormularioSeisEntity
 import com.example.awaq1.data.formularios.FormularioSieteEntity
 import com.example.awaq1.data.formularios.FormularioTresEntity
 import com.example.awaq1.data.formularios.FormularioUnoEntity
+import com.example.awaq1.data.formularios.remote.dto.FormularioUnoSubmission
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+
+
+data class ApiMessage(
+    val message: String?,
+    val tenant: String?,
+    val formKey: String?,
+    val data: Any?
+)
 
 interface AuthApiService {
     //para futuras implementaciones
@@ -21,9 +31,12 @@ interface AuthApiService {
     suspend fun getProfile(): Response<ProfileResponse>
 
     //POST de los formularios
-    @POST("/api/biomo/forms/1/submission")
-    suspend fun sendFormUno(@Body formularioEntities: FormularioUnoEntity): Response<FormularioResponse>
-
+    @POST("/api/{tenant}/forms/{formKey}/submission")
+    suspend fun sendFormUno(
+        @Path("tenant") tenant: String,
+        @Path("formKey") formKey: String,
+        @Body body: FormularioUnoSubmission
+    ): Response<ApiMessage>
     @POST("/api/biomo/forms/2/submission")
     suspend fun sendFormDos(@Body formularioEntities: FormularioDosEntity): Response<FormularioResponse>
 

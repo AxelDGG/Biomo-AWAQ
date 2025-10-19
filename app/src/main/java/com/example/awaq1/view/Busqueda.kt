@@ -329,17 +329,24 @@ data class FormInformation(
 
     @Composable
     fun verCard(navController: NavController, modifier: Modifier = Modifier) {
+        // NUEVO: estado para mostrar el dialogo de enviar cuando es completo
+        var showEnviarDialog by remember { mutableStateOf(false) }
+
         Card(
             modifier = modifier
                 .fillMaxWidth()
                 .padding()
-                .clickable { this.editFormulario(navController) },
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 4.dp
-            ),
+                .clickable {
+                    if (completo) {
+                        // NO abrir el formulario: mostrar opciones Atrás / Enviar
+                        showEnviarDialog = true
+                    } else {
+                        // Incompleto: abrir para editar como siempre
+                        this.editFormulario(navController)
+                    }
+                },
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         ) {
             Row(
                 modifier = Modifier
@@ -389,7 +396,42 @@ data class FormInformation(
                 }
             }
         }
+
+        // NUEVO: Dialogo con opciones Atrás / Enviar (placeholder)
+        if (showEnviarDialog) {
+            AlertDialog(
+                onDismissRequest = { showEnviarDialog = false },
+                title = { Text("Formulario completo") },
+                text = { Text("Este formulario ya está completo. ¿Desea enviarlo ahora?") },
+                dismissButton = {
+                    TextButton(onClick = { showEnviarDialog = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent, // 💚 Verde personalizado
+                            contentColor = Color(0xFF4E7029))
+                    ) {
+                        Text("Atrás")
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showEnviarDialog = false
+                            // TODO: aquí conectamos el flujo de envío real
+                            // Por ahora, placeholder:
+                            // navController.navigate(EnviarFormID(formulario, formId))
+                            // o lanza una corrutina de 'upload' cuando lo definamos.
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4E7029), // 💚 Verde personalizado
+                            contentColor = Color.White)
+                        ) { Text("Enviar") }
+                }
+            )
+        }
     }
+
 }
+
+
 
 private fun siONo(boolean: Boolean): String = if (boolean) "Sí" else "No"

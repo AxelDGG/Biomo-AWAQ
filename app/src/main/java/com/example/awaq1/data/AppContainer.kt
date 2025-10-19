@@ -18,7 +18,9 @@ interface AppContainer {
 
 class AppDataContainer(private val context: Context) : AppContainer {
     private val tokenManager by lazy{TokenManager(context)}
-    private val apiService by lazy{ RetroFitClient.create(tokenManager) }
+    private val apiService: AuthApiService by lazy {
+        RetroFitClient.create(tokenManager)
+    }
 
     override val formulariosRepository: FormulariosRepository by lazy {
         OfflineFormulariosRepository(
@@ -53,8 +55,8 @@ class AppDataContainer(private val context: Context) : AppContainer {
         )
     }
 
-    override val formulariosRemoteRepository: FormsRemoteRepository by lazy{
-        FormsRemoteRepository(apiService as AuthApiService)
+    override val formulariosRemoteRepository: FormsRemoteRepository by lazy {
+        FormsRemoteRepository(apiService)
     }
 }
 
