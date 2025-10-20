@@ -106,7 +106,7 @@ fun Home(navController: NavController) {
     val userId by tokenManager.userId.collectAsState(initial = null)
 
     // Usamos un texto temporal para el nombre.
-    val nombre = "usuario"
+    val username by tokenManager.username.collectAsState(initial = "...")
 
     val appContainer = (context as MainActivity).container
     val usuariosRepository = appContainer.usuariosRepository
@@ -183,7 +183,7 @@ fun Home(navController: NavController) {
                                 overflow = TextOverflow.Ellipsis,
                             )
                             Text(
-                                text = "$nombre!",
+                                text = "$username!",
                                 fontSize = 36.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF4E7029),
