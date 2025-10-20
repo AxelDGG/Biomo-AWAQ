@@ -41,13 +41,11 @@ import com.example.awaq1.data.formularios.FormularioUnoEntity
 import kotlinx.coroutines.runBlocking
 import androidx.compose.material.icons.Icons
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.ui.text.font.FontStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.toRoute
 import coil.compose.rememberAsyncImagePainter
@@ -55,12 +53,16 @@ import com.example.awaq1.ViewModels.CameraViewModel
 import com.example.awaq1.data.formularios.FormularioDosEntity
 import com.example.awaq1.data.formularios.ImageEntity
 import com.example.awaq1.data.formularios.Ubicacion
+import com.example.awaq1.data.formularios.local.TokenManager
 import com.example.awaq1.navigator.FormUnoID
 import com.example.awaq1.ui.theme.NombreCientificoForms
 import kotlinx.coroutines.flow.first
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Preview(showBackground = true, showSystemUi = false)
@@ -73,11 +75,15 @@ fun Preview() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
-    val context = LocalContext.current as MainActivity
-    val appContainer = context.container
+    val activity = LocalContext.current as? MainActivity ?: return
+    val appContainer = activity.container
+    val tokenManager = TokenManager(activity)
+    val userId by tokenManager.userId.collectAsState(initial = null)
 
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
-    val ubicacion = Ubicacion(context)
+
+    val ubicacion = Ubicacion(activity)
+    val scope = rememberCoroutineScope()
 
     var transecto by remember { mutableStateOf("") }
     var clima by remember { mutableStateOf("") }
@@ -95,58 +101,47 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
     var showCamera by remember { mutableStateOf(false) }
     val savedImageUris = remember { mutableStateOf(mutableListOf<Uri>()) }
 
-    if (formularioId != 0L) {
-        val formulario: FormularioUnoEntity? = runBlocking {
-            Log.d("Formulario1Loading", "Loading formulario1 with ID $formularioId")
-            appContainer.formulariosRepository.getFormularioUnoStream(formularioId).first()
-        }
+    LaunchedEffect(formularioId) {
+        if (formularioId != 0L) {
+            val formulario = appContainer.formulariosRepository
+                .getFormularioUnoStream(formularioId).first()
 
-        if (formulario != null) {
-            transecto = formulario.transecto
-            clima = formulario.clima
-            temporada = formulario.temporada
-            tipoAnimal = formulario.tipoAnimal
-            nombreComun = formulario.nombreComun
-            nombreCientifico = formulario.nombreCientifico
-            numeroIndividuos = formulario.numeroIndividuos
-            tipoObservacion = formulario.tipoObservacion
-            observaciones = formulario.observaciones
-            fecha = formulario.fecha
-            editado = formulario.editado
-            location = if (formulario.latitude != null && formulario.longitude != null) {
-                Pair(formulario.latitude, formulario.longitude)
-            } else {
-                null
-            }
-
-            // Load saved images
-            val storedImages = runBlocking {
-                appContainer.formulariosRepository.getImagesByFormulario(formularioId, "Formulario1")
-                    .first() // Fetch the list of ImageEntity for this form
-            }
-
-            // Convert image URIs from String to Uri and store them in savedImageUris
-            savedImageUris.value = storedImages.mapNotNull { imageEntity ->
-                try {
-                    Uri.parse(imageEntity.imageUri) // Convert String to Uri
-                } catch (e: Exception) {
-                    Log.e("ObservationForm", "Failed to parse URI: ${imageEntity.imageUri}", e)
-                    null
+            if (formulario != null) {
+                transecto = formulario.transecto
+                clima = formulario.clima
+                temporada = formulario.temporada
+                tipoAnimal = formulario.tipoAnimal
+                nombreComun = formulario.nombreComun
+                nombreCientifico = formulario.nombreCientifico
+                numeroIndividuos = formulario.numeroIndividuos
+                tipoObservacion = formulario.tipoObservacion
+                observaciones = formulario.observaciones
+                fecha = formulario.fecha
+                editado = formulario.editado
+                location = formulario.latitude?.let { lat ->
+                    formulario.longitude?.let { lon -> lat to lon }
                 }
-            }.toMutableList()
-        } else {
-            Log.e("Formulario1Loading", "NO se pudo obtener el formulario1 con id $formularioId")
+
+                val storedImages = appContainer.formulariosRepository
+                    .getImagesByFormulario(formularioId, "Formulario1")
+                    .first()
+                savedImageUris.value = storedImages.mapNotNull {
+                    runCatching { Uri.parse(it.imageUri) }.getOrNull()
+                }.toMutableList()
+            } else {
+                Log.e("Formulario1Loading", "No se pudo obtener formulario1 id=$formularioId")
+            }
         }
     }
 
 
     if(location == null){
         LaunchedEffect(Unit) {
-            context.requestLocationPermission()
+            activity.requestLocationPermission()
             if (ubicacion.hasLocationPermission()) {
                 location = ubicacion.obtenerCoordenadas()
                 if (location != null) {
-                    Log.d("ObservationForm", "Location retrieved: Lat=${location!!.first}, Long=${location!!.second}")
+                    location?.let { Log.d("ObservationForm", "Location retrieved: Lat=${it.first}, Long=${it.second}") }
                 } else {
                     Log.d("ObservationForm", "Location is null")
                 }
@@ -182,7 +177,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
         content = { paddingValues ->
             if (showCamera) {
                 CameraWindow(
-                    activity = context,
+                    activity = activity,
                     cameraViewModel = cameraViewModel,
                     savedImageUris = savedImageUris, // Pass state
                     onClose = { showCamera = false },
@@ -480,55 +475,83 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                     )
                                 )
                             }
-
                             Button(
                                 onClick = {
-                                    if (fecha.isNullOrEmpty()) {
-                                        fecha = getCurrentDate()
-                                    }
+                                    if (fecha.isEmpty()) fecha = getCurrentDate()
                                     editado = getCurrentDate()
-                                    val formulario =
-                                        FormularioUnoEntity(
-                                            transecto = transecto,
-                                            clima = clima,
-                                            temporada = temporada,
-                                            tipoAnimal = tipoAnimal,
-                                            nombreComun = nombreComun,
-                                            nombreCientifico = nombreCientifico,
-                                            numeroIndividuos = numeroIndividuos,
-                                            tipoObservacion = tipoObservacion,
-                                            observaciones = observaciones,
-                                            latitude = location?.first,
-                                            longitude = location?.second,
-                                            fecha = fecha,
-                                            editado = editado
-                                        ).withID(formularioId)
-                                    // Guardar en base de datos, vinculado al usuario
-                                    runBlocking {
-                                        // Insert regresa su id
-                                        val formId =
-                                            appContainer.usuariosRepository.insertUserWithFormularioUno(
-                                                context.accountInfo.user_id, formulario
-                                            )
-                                        Log.d("ImageDAO", "formId: $formId")
 
-                                        // Borrar todas las fotos en ese reporte
-                                        appContainer.formulariosRepository.deleteImagesByFormulario(
-                                            formularioId = formId,
-                                            formularioType = "Formulario1"
-                                        )
+                                    val formulario = FormularioUnoEntity(
+                                        transecto = transecto,
+                                        clima = clima,
+                                        temporada = temporada,
+                                        tipoAnimal = tipoAnimal,
+                                        nombreComun = nombreComun,
+                                        nombreCientifico = nombreCientifico,
+                                        numeroIndividuos = numeroIndividuos,
+                                        tipoObservacion = tipoObservacion,
+                                        observaciones = observaciones,
+                                        latitude = location?.first ?: 0.0,
+                                        longitude = location?.second ?: 0.0,
+                                        fecha = fecha,
+                                        editado = editado
+                                    ).withID(formularioId)
 
-                                        // Agregar todas las imagenes al reporte
-                                        savedImageUris.value.forEach { uri ->
-                                            val image = ImageEntity(
-                                                formularioId = formId,
-                                                formularioType = "Formulario1",
-                                                imageUri = uri.toString()
-                                            )
-                                            appContainer.formulariosRepository.insertImage(image)
+                                    val currentUserId = userId
+                                    Log.d("FormularioDebug", "Intentando guardar formulario. UserID = $currentUserId")
+
+                                    if (currentUserId == null) {
+                                        Log.e("Formulario1", "No se pudo enviar: userId nulo")
+                                        return@Button
+                                    }
+
+                                    // ⚠️ Copiamos la lista de imágenes en MAIN antes de ir a IO
+                                    val imagesSnapshot = savedImageUris.value.toList()
+
+                                    // Lanzamos en MAIN; el trabajo pesado va con withContext(IO)
+                                    scope.launch {
+                                        try {
+                                            val result = withContext(Dispatchers.IO) {
+                                                // 1) Guardar localmente usuario + formulario
+                                                val formId = appContainer.usuariosRepository.insertUserWithFormularioUno(
+                                                    currentUserId.toLong(),
+                                                    formulario
+                                                )
+
+                                                // 2) Reemplazar imágenes asociadas al formulario local
+                                                appContainer.formulariosRepository.deleteImagesByFormulario(
+                                                    formularioId = formId,
+                                                    formularioType = "Formulario1"
+                                                )
+                                                imagesSnapshot.forEach { uri ->
+                                                    appContainer.formulariosRepository.insertImage(
+                                                        ImageEntity(
+                                                            formularioId = formId,
+                                                            formularioType = "Formulario1",
+                                                            imageUri = uri.toString()
+                                                        )
+                                                    )
+                                                }
+
+                                                // 3) Enviar al backend
+                                                appContainer.formulariosRemoteRepository.enviarFormularioUno(formulario)
+                                            }
+
+                                            // 👇 Ya estamos de regreso en MAIN: aquí sí es legal navegar / mostrar UI
+                                            if (result.isSuccess) {
+                                                navController.navigate("home") {
+                                                    launchSingleTop = true
+                                                    // ajusta tu backstack si lo deseas:
+                                                    // popUpTo("elegir_reporte") { inclusive = false }
+                                                }
+                                            } else {
+                                                Log.e("Formulario1", "Falló envío remoto: ${result.exceptionOrNull()?.message}")
+                                                // podrías mostrar un Snackbar aquí si tienes host
+                                            }
+                                        } catch (t: Throwable) {
+                                            Log.e("Formulario1", "Error guardando o enviando formulario", t)
+                                            // mostrar Snackbar/Toast si quieres
                                         }
                                     }
-                                    navController.navigate("home")
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF4E7029),
@@ -545,6 +568,8 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                     )
                                 )
                             }
+
+
                         }
                     }
                 }

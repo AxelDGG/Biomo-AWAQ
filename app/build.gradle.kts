@@ -18,8 +18,6 @@ android {
         versionName = "1.0"
 
         manifestPlaceholders.clear()
-        manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
-        manifestPlaceholders["auth0Scheme"] = "https"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -97,7 +95,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.auth0)
     implementation("io.coil-kt:coil-compose:2.4.0")
     // Test Imports
     testImplementation(libs.junit)
@@ -132,5 +129,5 @@ configurations.all {
         // Force compatible versions for AndroidX testing dependencies
         force("androidx.test.ext:junit:1.1.5")
         force("androidx.test.espresso:espresso-core:3.5.0")
-    }
+     }
 }

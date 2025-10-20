@@ -4,21 +4,36 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+
+// Cuerpo genérico para cualquier formulario (clave→valor)
+typealias FormBody = Map<String, @JvmSuppressWildcards Any?>
+
+data class ApiMessage(
+    val message: String?,
+    val tenant: String?,
+    val formKey: String?,
+    val data: Any?
+)
 
 interface AuthApiService {
-    //para futuras implementaciones
-  //  @POST("api/auth/signup")
-  //  suspend fun signUp(@Body request: AuthRequest): Response<Unit>
 
-    @POST("api/auth/signin")
+    // ---- Auth / Perfil ----
+    @POST("api/biomo/users/login")
     suspend fun signIn(@Body request: AuthRequest): Response<AuthResponse>
 
-    @GET("api/profile")
+    @GET("api/biomo/profile")
     suspend fun getProfile(): Response<ProfileResponse>
 
-    @POST("api/todos") // o la ruta que corresponda en tu backend
-    suspend fun submitForm(@Body formRequest: FormRequest): Response<Unit> // Asumimos que el backend no devuelve nada en el cuerpo
+    @POST("api/biomo/users/logout")
+    suspend fun logout(): Response<Unit>
 
-    @GET("api/todos")
-    suspend fun getTodos(): Response<List<TodoDto>>
+    // ---- Envío de formularios (1–7) con la misma firma ----
+    // Cambia solo formKey = "1".."7"
+    @POST("api/{tenant}/forms/{formKey}/submission")
+    suspend fun sendForm(
+        @Path("tenant") tenant: String,
+        @Path("formKey") formKey: String,
+        @Body body: FormBody
+    ): Response<ApiMessage>
 }
