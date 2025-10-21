@@ -209,4 +209,33 @@ class UsuariosRepository(
         }
     }
 
+    private suspend fun ensureLocalUserId(username: String, lastAccess: String, lastLogin: String): Long {
+        val existing = usuarioDAO.findByUsername(username)
+        if (existing != null) return existing.id
+        val newId = usuarioDAO.insert(UsuarioEntity(username = username, lastAccess = lastAccess, lastLogin = lastLogin))
+        return newId
+    }
+
+    @Transaction
+    suspend fun guardarYVincularFormulario1ConUsuarioUsername(
+        username: String,
+        lastAccess: String,
+        lastLogin: String,
+        formulario: FormularioUnoEntity
+    ): Long {
+        // 1) Asegura usuario LOCAL (id autoincrement)
+        val localUserId = ensureLocalUserId(username, lastAccess, lastLogin)
+
+        // 2) Inserta/actualiza formulario y obtén id local
+        val formId = formularioUnoDAO.insert(formulario) // devuelve Long
+
+        // 3) Inserta relación con IDS LOCALES
+        usuarioFormulario1DAO.insert(
+            UsuarioFormulario1Entity(
+                usuarioId = localUserId,
+                formId = formId
+            )
+        )
+        return formId
+    }
 }

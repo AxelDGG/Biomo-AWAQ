@@ -22,6 +22,15 @@ interface UsuarioDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(usuario: UsuarioEntity): Long
 
+
+    // En UserDao.kt (si no lo tienes ya):
+    @Query("SELECT * FROM Usuarios WHERE username = :username LIMIT 1")
+    suspend fun findByUsername(username: String): UsuarioEntity?
+
+    @Query("SELECT COUNT(1) FROM Usuarios WHERE id = :id")
+    suspend fun existsById(id: Long): Int
+
+
     @Update
     suspend fun update(usuario: UsuarioEntity)
 

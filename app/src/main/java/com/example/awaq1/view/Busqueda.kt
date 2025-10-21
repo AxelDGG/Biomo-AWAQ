@@ -238,6 +238,10 @@ fun OrdenarPorFormularioMenu(
 
 enum class Tab { todos, guardados, subidos }
 
+// ----------- Card / Estado -----------
+
+enum class EstadoEnvio { INCOMPLETO, PENDIENTE, ENVIADO }
+
 data class FormInformation(
     val tipo: String,
     val valorIdentificador: String,
@@ -347,16 +351,38 @@ fun FormCard(
 ) {
     var showEnviarDialog by remember { mutableStateOf(false) }
 
+    // Repos y estado "enviado" desde la tabla nueva
+    val registroRepo = remember { appContainer.registroEnvioRepository }
+    val formType = remember(formInfo.formulario) {
+        when (formInfo.formulario) {
+            "form1" -> 1; "form2" -> 2; "form3" -> 3; "form4" -> 4
+            "form5" -> 5; "form6" -> 6; "form7" -> 7
+            else -> -1
+        }
+    }
+    val enviado by remember(formType, formInfo.formId) {
+        registroRepo.isSent(formType, formInfo.formId)
+    }.collectAsState(initial = false)
+
+    // Estado compuesto
+    val estado by remember(formInfo.completo, enviado) {
+        mutableStateOf(
+            when {
+                !formInfo.completo -> EstadoEnvio.INCOMPLETO
+                enviado -> EstadoEnvio.ENVIADO
+                else -> EstadoEnvio.PENDIENTE
+            }
+        )
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                if (formInfo.completo) {
-                    // mostrar dialogo para enviar
-                    showEnviarDialog = true
-                } else {
-                    // abrir para editar
-                    formInfo.editFormulario(navController)
+                when (estado) {
+                    EstadoEnvio.INCOMPLETO -> formInfo.editFormulario(navController) // ir a completar
+                    EstadoEnvio.PENDIENTE  -> { showEnviarDialog = true }            // completo pero no enviado
+                    EstadoEnvio.ENVIADO    -> return@clickable                       // no hacer nada
                 }
             },
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -376,15 +402,33 @@ fun FormCard(
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-                Row {
-                    if (formInfo.completo) {
-                        Icon(Icons.Rounded.CheckCircle, contentDescription = null, tint = Color.Green)
-                    } else {
-                        Icon(Icons.Rounded.Warning, contentDescription = null, tint = Color(237, 145, 33))
-                    }
-                    Spacer(modifier = Modifier.size(10.dp, 10.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.size(10.dp))
                     Text("Creado: ${formInfo.fechaCreacion}")
                 }
+                Spacer(Modifier.height(8.dp))
+
+                // Chip de estado
+                AssistChip(
+                    onClick = {},
+                    label = {
+                        Text(
+                            when (estado) {
+                                EstadoEnvio.INCOMPLETO -> "Incompleto"
+                                EstadoEnvio.PENDIENTE  -> "Pendiente de envío"
+                                EstadoEnvio.ENVIADO    -> "Enviado"
+                            }
+                        )
+                    },
+                    leadingIcon = {
+                        val (icon, tint) = when (estado) {
+                            EstadoEnvio.INCOMPLETO -> Icons.Rounded.Warning to Color(0xFFE67E22)
+                            EstadoEnvio.PENDIENTE  -> Icons.Rounded.Warning to Color(0xFF8E8E8E)
+                            EstadoEnvio.ENVIADO    -> Icons.Rounded.CheckCircle to Color(0xFF2ECC71)
+                        }
+                        Icon(imageVector = icon, contentDescription = null, tint = tint)
+                    }
+                )
             }
             Column {
                 Text(text = "${formInfo.primerTag}: ${formInfo.primerContenido}", fontSize = 25.sp)
@@ -411,7 +455,6 @@ fun FormCard(
                 Button(
                     onClick = {
                         showEnviarDialog = false
-
                         scope.launch {
                             // helper generico cargar -> enviar -> navegar
                             suspend fun <T> cargarYEnviar(
