@@ -54,13 +54,14 @@ fun Settings(navController: NavController, onLogout: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Configuración")
+                title = { Text("Configuración", color = Color(0xFF4E7029))
                         },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar"
+                            contentDescription = "Regresar",
+                            tint = Color(0xFF4E7029)
                         )
                     }
                 },
@@ -97,7 +98,7 @@ fun Settings(navController: NavController, onLogout: () -> Unit) {
                         .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Notificaciones", fontSize = 18.sp)
+                    Text(text = "Notificaciones", fontSize = 18.sp, color = Color.Black)
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         checked = notificationsEnabled,
@@ -121,7 +122,8 @@ fun SectionTitle(title: String) {
         text = title,
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier.padding(vertical = 8.dp),
+        color = Color.Black
     )
 }
 
@@ -134,7 +136,7 @@ fun MenuItem(text: String, onClick: () -> Unit) {
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = text, fontSize = 18.sp)
+        Text(text = text, fontSize = 18.sp,color = Color.Black)
         Spacer(modifier = Modifier.weight(1f))
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,

@@ -189,17 +189,10 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         location?.let { (latitude, longitude) ->
-                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
-                        } ?: Text("Buscando ubicacion...")
+                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude", color = Color.Black)
+                        } ?: Text("Buscando ubicacion...", color = Color.Black, )
 
-                        OutlinedTextField(
-                            value = ubicaciontxt,
-                            onValueChange = {},
-                            label = { Text("Ubicación Actual") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        
-                        Text("Estado del Tiempo:")
+                        Text("Estado del Tiempo:", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -238,7 +231,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                 }
                             }
                         }
-                        Text("Época")
+                        Text("Época", color = Color.Black)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -254,11 +247,11 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
-                        Text("Zona")
+                        Text("Zona", color = Color.Black)
                         val zonasOpciones = listOf(
                             "Bosque",
                             "Arreglo Agroforestal",
@@ -276,7 +269,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                         unselectedColor = Color.Gray
                                     )
                                 )
-                                Text(option, modifier = Modifier.padding(start = 8.dp))
+                                Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                             }
                         }
 
@@ -288,7 +281,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                 if (newValue.all { it.isDigit() }) {
                                     pluviosidad = newValue
                                 }},
-                            label = { Text("Pluviosidad (mm)") },
+                            label = { Text("Pluviosidad (mm)", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -301,7 +294,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                 if (newValue.all { it.isDigit() }) {
                                     temperaturaMaxima = newValue
                                 }},
-                            label = { Text("Temperatura máxima") },
+                            label = { Text("Temperatura máxima", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -314,7 +307,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                 if (newValue.all { it.isDigit() }) {
                                     humedadMaxima = newValue
                                 }},
-                            label = { Text("Humedad máxima") },
+                            label = { Text("Humedad máxima", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -327,7 +320,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                 if (newValue.all { it.isDigit() }) {
                                     temperaturaMinima = newValue
                                 }},
-                            label = { Text("Temperatura mínima") },
+                            label = { Text("Temperatura mínima", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -340,7 +333,7 @@ fun ObservationFormSiete(navController: NavController, formularioId: Long = 0) {
                                 if (newValue.all { it.isDigit() }) {
                                     nivelQuebrada = newValue
                                 }},
-                            label = { Text("Nivel Quebrada (mt)") },
+                            label = { Text("Nivel Quebrada (mt)", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )

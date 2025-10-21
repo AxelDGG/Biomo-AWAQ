@@ -184,24 +184,17 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         location?.let { (latitude, longitude) ->
-                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
-                        } ?: Text("Buscando ubicacion...")
-
-                        OutlinedTextField(
-                            value = ubicaciontxt,
-                            onValueChange = {},
-                            label = { Text("Ubicación Actual") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude", color = Color.Black)
+                        } ?: Text("Buscando ubicacion...", color = Color.Black)
 
                         OutlinedTextField(
                             value = codigo,
                             onValueChange = { codigo = it },
-                            label = { Text("Código") },
+                            label = { Text("Código", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        Text("Estado del Tiempo:")
+                        Text("Estado del Tiempo:", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -240,7 +233,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                 }
                             }
                         }
-                        Text("Época")
+                        Text("Época", color = Color.Black)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -256,12 +249,12 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
                         // SI o NO
-                        Text("Seguimiento")
+                        Text("Seguimiento", color = Color.Black)
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(
@@ -272,7 +265,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                         unselectedColor = Color.Gray
                                     )
                                 )
-                                Text("Sí", modifier = Modifier.padding(start = 8.dp))
+                                Text("Sí", modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(
@@ -283,12 +276,12 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                         unselectedColor = Color.Gray
                                     )
                                 )
-                                Text("No", modifier = Modifier.padding(start = 8.dp))
+                                Text("No", modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                             }
                         }
 
                         // SI o NO
-                        Text("Cambió")
+                        Text("Cambió", color = Color.Black)
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(
@@ -299,7 +292,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                         unselectedColor = Color.Gray
                                     )
                                 )
-                                Text("Sí", modifier = Modifier.padding(start = 8.dp))
+                                Text("Sí", modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(
@@ -310,11 +303,11 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                         unselectedColor = Color.Gray
                                     )
                                 )
-                                Text("No", modifier = Modifier.padding(start = 8.dp))
+                                Text("No", modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                             }
                         }
 
-                        Text("Cobertura")
+                        Text("Cobertura", color = Color.Black)
                         val coberturaOptions =
                             listOf("BD", "RA", "RB", "PA", "PL", "CP", "CT", "VH", "TD", "IF")
                         if (cobertura == "") {
@@ -331,7 +324,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
@@ -339,14 +332,14 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                         OutlinedTextField(
                             value = tipoCultivo,
                             onValueChange = { tipoCultivo = it },
-                            label = { Text("Tipos de cultivo") },
+                            label = { Text("Tipos de cultivo", color = Color.Black) },
                             // Es un numero lo de esta entrada?
                             // keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             // TODO: Aclarar, cambiar schema si es necesario
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Text("Disturbio")
+                        Text("Disturbio", color = Color.Black)
                         val disturbioOptions = listOf(
                             "Inundación",
                             "Quema",
@@ -371,7 +364,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
@@ -427,7 +420,7 @@ fun ObservationFormTres(navController: NavController, formularioId: Long = 0L) {
                         OutlinedTextField(
                             value = observaciones,
                             onValueChange = { observaciones = it },
-                            label = { Text("Observaciones") },
+                            label = { Text("Observaciones", color = Color.Gray) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp),

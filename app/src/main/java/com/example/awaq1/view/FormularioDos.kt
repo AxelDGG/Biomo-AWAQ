@@ -190,17 +190,10 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         location?.let { (latitude, longitude) ->
-                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
-                        } ?: Text("Buscando ubicacion...")
+                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude", color = Color.Black)
+                        } ?: Text("Buscando ubicacion...", color = Color.Black)
 
-                        OutlinedTextField(
-                            value = ubicaciontxt,
-                            onValueChange = {},
-                            label = { Text("Ubicación Actual") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        Text("Zona")
+                        Text("Zona", color = Color.Black)
                         val zonasOpciones = listOf(
                             "Bosque",
                             "Arreglo Agroforestal",
@@ -221,11 +214,11 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
-                        Text("Estado del Tiempo:")
+                        Text("Estado del Tiempo:", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -264,7 +257,7 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                                 }
                             }
                         }
-                        Text("Época")
+                        Text("Época", color = Color.Black)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -280,12 +273,12 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
 
-                        Text("Tipo de Animal")
+                        Text("Tipo de Animal", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -347,14 +340,14 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                         OutlinedTextField(
                             value = nombreComun,
                             onValueChange = { nombreComun = it },
-                            label = { Text("Nombre Común") },
+                            label = { Text("Nombre Común", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         OutlinedTextField(
                             value = nombreCientifico,
                             onValueChange = { nombreCientifico = it },
-                            label = { Text("Nombre Científico") },
+                            label = { Text("Nombre Científico", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = NombreCientificoForms
                         )
@@ -366,12 +359,12 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                                 if (newValue.all { it.isDigit() }) {
                                     numeroIndividuos = newValue
                                 }},
-                            label = { Text("Número de Individuos") },
+                            label = { Text("Número de Individuos", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Text("Tipo de Observación")
+                        Text("Tipo de Observación", color = Color.Black)
                         val observacionOptions =
                             listOf("La Vió", "Huella", "Rastro", "Cacería", "Le dijeron")
                         if (tipoObservacion == "") {
@@ -388,12 +381,12 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
 
-                        Text("Altura de Observación")
+                        Text("Altura de Observación", color = Color.Black)
                         val alturaOptions: List<Pair<String, String>> = listOf(
                             Pair("Baja", "<1mt"),
                             Pair("Media", "1-3mt"),
@@ -415,7 +408,7 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                                     )
                                     Text(
                                         "${option.first} ${option.second}",
-                                        modifier = Modifier.padding(start = 8.dp)
+                                        modifier = Modifier.padding(start = 8.dp), color = Color.Black
                                     )
                                 }
                             }
@@ -469,7 +462,7 @@ fun ObservationFormDos(navController: NavController, formularioId: Long = 0) {
                         OutlinedTextField(
                             value = observaciones,
                             onValueChange = { observaciones = it },
-                            label = { Text("Observaciones") },
+                            label = { Text("Observaciones", color = Color.Gray) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp),

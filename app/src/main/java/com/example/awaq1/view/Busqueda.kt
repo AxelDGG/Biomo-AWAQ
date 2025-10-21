@@ -100,12 +100,13 @@ fun Busqueda(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Busqueda") },
+                title = { Text(text = "Busqueda", color = Color(0xFF4E7029)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar"
+                            contentDescription = "Regresar",
+                            tint = Color(0xFF4E7029)
                         )
                     }
                 },

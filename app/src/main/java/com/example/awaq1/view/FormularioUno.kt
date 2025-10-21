@@ -197,8 +197,8 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         location?.let { (latitude, longitude) ->
-                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
-                        } ?: Text("Buscando ubicacion...")
+                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude", color = Color.Black)
+                        } ?: Text("Buscando ubicacion...", color = Color.Black)
 
                         OutlinedTextField(
                             value = transecto,
@@ -207,17 +207,12 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                 if (newValue.all { it.isDigit() }) {
                                     transecto = newValue
                                 }},
-                            label = { Text("Número de Transecto") },
+                            label = { Text("Número de Transecto", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
-                            value = ubicaciontxt,
-                            onValueChange = {},
-                            label = { Text("Ubicación Actual") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Text("Estado del Tiempo:")
+
+                        Text(text = "Estado del Tiempo:", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -225,7 +220,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                             //verticalAlignment = Alignment.CenterVertically
                         ) {
                             val weatherOptions =
-                                listOf("Soleado", "Parcialmente Nublado", "Lluvioso")
+                                listOf("Soleado", "Parcialmente Nublado", "Lluvioso", )
                             val weatherIcons = listOf(
                                 R.drawable.sunny, // Add sunny icon in your drawable resources
                                 R.drawable.cloudy, // Add partly cloudy icon in your drawable resources
@@ -257,7 +252,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                 }
                             }
                         }
-                        Text("Época")
+                        Text("Época", color = Color.Black)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -273,12 +268,12 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
 
-                        Text("Tipo de Animal")
+                        Text("Tipo de Animal", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -346,14 +341,14 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                         OutlinedTextField(
                             value = nombreComun,
                             onValueChange = { nombreComun = it },
-                            label = { Text("Nombre Común") },
+                            label = { Text("Nombre Común", color = Color.Black)},
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         OutlinedTextField(
                             value = nombreCientifico,
                             onValueChange = { nombreCientifico = it },
-                            label = { Text("Nombre Científico") },
+                            label = { Text("Nombre Científico", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = NombreCientificoForms
                         )
@@ -365,12 +360,12 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                 if (newValue.all { it.isDigit() }) {
                                     numeroIndividuos = newValue
                                 }},
-                            label = { Text("Número de Individuos") },
+                            label = { Text("Número de Individuos", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Text("Tipo de Observación")
+                        Text("Tipo de Observación", color = Color.Black)
                         val observacionOptions =
                             listOf("La Vió", "Huella", "Rastro", "Cacería", "Le dijeron")
                         if (tipoObservacion == "") {
@@ -387,7 +382,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
@@ -445,7 +440,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                         OutlinedTextField(
                             value = observaciones,
                             onValueChange = { observaciones = it },
-                            label = { Text("Observaciones") },
+                            label = { Text("Observaciones", color = Color.Gray) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp),
@@ -504,7 +499,7 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                         return@Button
                                     }
 
-                                    // ⚠️ Copiamos la lista de imágenes en MAIN antes de ir a IO
+                                    //  Copiamos la lista de imágenes en MAIN antes de ir a IO
                                     val imagesSnapshot = savedImageUris.value.toList()
 
                                     // Lanzamos en MAIN; el trabajo pesado va con withContext(IO)
@@ -540,16 +535,15 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                             if (result.isSuccess) {
                                                 navController.navigate("home") {
                                                     launchSingleTop = true
-                                                    // ajusta tu backstack si lo deseas:
+                                                    // ajusta el backstack si quieren:
                                                     // popUpTo("elegir_reporte") { inclusive = false }
                                                 }
                                             } else {
                                                 Log.e("Formulario1", "Falló envío remoto: ${result.exceptionOrNull()?.message}")
-                                                // podrías mostrar un Snackbar aquí si tienes host
                                             }
                                         } catch (t: Throwable) {
                                             Log.e("Formulario1", "Error guardando o enviando formulario", t)
-                                            // mostrar Snackbar/Toast si quieres
+                                            // mostrar Snackbar/Toast
                                         }
                                     }
                                 },
@@ -565,7 +559,8 @@ fun ObservationForm(navController: NavController, formularioId: Long = 0L) {
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.SemiBold
-                                    )
+                                    ),
+                                    color = Color.White
                                 )
                             }
 

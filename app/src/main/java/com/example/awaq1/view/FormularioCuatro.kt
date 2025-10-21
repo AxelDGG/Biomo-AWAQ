@@ -201,24 +201,17 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         location?.let { (latitude, longitude) ->
-                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude")
-                        } ?: Text("Buscando ubicacion...")
-
-                        OutlinedTextField(
-                            value = ubicaciontxt,
-                            onValueChange = {},
-                            label = { Text("Ubicación Actual") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                            Text("Ubicacion Actual: Lati: $latitude, Long: $longitude", color = Color.Black)
+                        } ?: Text("Buscando ubicacion...", color = Color.Black)
 
                         OutlinedTextField(
                             value = codigo,
                             onValueChange = { codigo = it },
-                            label = { Text("Código") },
+                            label = { Text("Código", color = Color.Black) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        Text("Estado del Tiempo:")
+                        Text("Estado del Tiempo:", color = Color.Black)
                         FlowRow (
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -257,7 +250,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 }
                             }
                         }
-                        Text("Época")
+                        Text("Época", color = Color.Black)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -273,11 +266,11 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text(option, modifier = Modifier.padding(start = 8.dp))
+                                    Text(option, modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
-                        Text("Cuadrante")
+                        Text("Cuadrante", color = Color.Black)
                         val quadAOpciones = listOf("A", "B")
                         val quadBOpciones = listOf("C", "D", "E", "F", "G")
                         if (quad_a == "") {
@@ -369,7 +362,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                             }
                         }
 
-                        Text("Sub-Cuadrante")
+                        Text("Sub-Cuadrante", color = Color.Black)
                         val subQuadOpciones = listOf("1", "2", "3", "4")
 
                         if (sub_quad == "") {
@@ -411,7 +404,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                             }
                         }
 
-			Text("Hábito de Crecimiento")
+			Text("Hábito de Crecimiento", color = Color.Black)
                         val alturaOptions: List<Pair<String, String>> = listOf(Pair("Arbusto", "<1mt"), Pair("Arbolito", "1-3mt"), Pair("Árbol", ">3mt"))
                         if (habitoDeCrecimiento == "") {
                             habitoDeCrecimiento = alturaOptions[0].first
@@ -427,21 +420,21 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                             unselectedColor = Color.Gray
                                         )
                                     )
-                                    Text("${option.first} ${option.second}", modifier = Modifier.padding(start = 8.dp))
+                                    Text("${option.first} ${option.second}", modifier = Modifier.padding(start = 8.dp), color = Color.Black)
                                 }
                             }
                         }
 			OutlinedTextField(
                             value = nombreComun,
                             onValueChange = { nombreComun = it },
-                            label = { Text("Nombre Común") },
+                            label = { Text("Nombre Común", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
 			OutlinedTextField(
                             value = nombreCientifico,
                             onValueChange = { nombreCientifico = it },
-                            label = { Text("Nombre Científico") },
+                            label = { Text("Nombre Científico", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = NombreCientificoForms
                         )
@@ -449,7 +442,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
 			OutlinedTextField(
                             value = placa,
                             onValueChange = { placa = it },
-                            label = { Text("Placa") },
+                            label = { Text("Placa", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -460,7 +453,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 if (newValue.all { it.isDigit() }) {
                                     circunferencia = newValue
                                 }},
-                            label = { Text("Circunferencia en cm") },
+                            label = { Text("Circunferencia en cm", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -471,7 +464,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 if (newValue.all { it.isDigit() }) {
                                     distancia = newValue
                                 }},
-                            label = { Text("Distancia en mt") },
+                            label = { Text("Distancia en mt", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -482,7 +475,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 if (newValue.all { it.isDigit() }) {
                                     estatura = newValue
                                 }},
-                            label = { Text("Estatura Biomonitor en mt") },
+                            label = { Text("Estatura Biomonitor en mt", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -493,7 +486,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                                 if (newValue.all { it.isDigit() }) {
                                     altura = newValue
                                 }},
-                            label = { Text("Altura en mt") },
+                            label = { Text("Altura en mt", color = Color.Black) },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -547,7 +540,7 @@ fun ObservationFormCuatro(navController: NavController, formularioId: Long = 0) 
                         OutlinedTextField(
                             value = observaciones,
                             onValueChange = { observaciones = it },
-                            label = { Text("Observaciones") },
+                            label = { Text("Observaciones", color = Color.Gray) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(100.dp),
