@@ -33,8 +33,14 @@ data class UsuarioEntity(
 @Entity(
     tableName = "UsuarioFormulario1",
     foreignKeys = [
-        ForeignKey(entity = UsuarioEntity::class, parentColumns = ["id"], childColumns = ["usuarioId"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = FormularioUnoEntity::class, parentColumns = ["id"], childColumns = ["formId"], onDelete = ForeignKey.CASCADE)
+        ForeignKey(entity = UsuarioEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["usuarioId"],
+            onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = FormularioUnoEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["formId"],
+            onDelete = ForeignKey.CASCADE)
     ],
     primaryKeys = ["usuarioId", "formId"]
 )

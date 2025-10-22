@@ -2,11 +2,13 @@ package com.example.awaq1.data.formularios.remote
 
 import com.example.awaq1.data.formularios.*
 import com.example.awaq1.data.formularios.remote.dto.toSubmission
+import com.example.awaq1.data.formularios.local.RegistroEnvioRepository
 import retrofit2.HttpException
 import java.io.IOException
 
 class FormsRemoteRepository(
-    private val authApiService: AuthApiService
+    private val authApiService: AuthApiService,
+    private val registroEnvioRepository: RegistroEnvioRepository   // 👈 NUEVO
 ) {
 
     // --- Helper genérico para llamadas Retrofit que devuelven Response<T> y lanzan errores claros
@@ -25,19 +27,30 @@ class FormsRemoteRepository(
         }
     }
 
-    // --- Helper para enviar cualquier formulario (1..7) con el mismo endpoint
-    private suspend fun enviar(formKey: String, body: Map<String, @JvmSuppressWildcards Any?>): Result<Unit> =
-        runCatching {
-            val resp = authApiService.sendForm(
-                tenant = "biomo",
-                formKey = formKey,
-                body = body
-            )
-            if (!resp.isSuccessful) {
-                val text = resp.errorBody()?.string()
-                throw IllegalStateException("HTTP ${resp.code()} ${resp.message()} :: ${text ?: "sin detalle"}")
+    /**
+     * Envía cualquier formulario (1..7) y, si el backend regresa HTTP 201, marca como enviado
+     * en la tabla RegistroEnvio (formType, formId).
+     */
+    private suspend fun enviar(
+        formType: Int,
+        formId: Long,
+        body: Map<String, @JvmSuppressWildcards Any?>
+    ): Result<Unit> = runCatching {
+        val resp = authApiService.sendForm(
+            tenant = "biomo",
+            formKey = formType.toString(),
+            body = body
+        )
+        if (resp.isSuccessful) {
+            // ✅ Solo marcamos como enviado si el código es exactamente 201
+            if (resp.code() == 201) {
+                registroEnvioRepository.markSent(formType, formId)
             }
+        } else {
+            val text = resp.errorBody()?.string()
+            throw IllegalStateException("HTTP ${resp.code()} ${resp.message()} :: ${text ?: "sin detalle"}")
         }
+    }
 
     // -----------------------
     // Envíos por formulario
@@ -48,37 +61,41 @@ class FormsRemoteRepository(
         userIdDelToken: Int? = null
     ): Result<Unit> {
         val payload = form.toSubmission(userIdDelToken)
-        return enviar("1", payload)
+        return enviar(
+            formType = 1,
+            formId = form.id,            // 👈 ajusta si tu campo no se llama 'id'
+            body = payload
+        )
     }
 
     suspend fun enviarFormularioDos(form: FormularioDosEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar("2", body)
+        return enviar(2, form.id, body) // 👈 ajusta 'form.id' si es necesario
     }
 
     suspend fun enviarFormularioTres(form: FormularioTresEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar("3", body)
+        return enviar(3, form.id, body)
     }
 
     suspend fun enviarFormularioCuatro(form: FormularioCuatroEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar("4", body)
+        return enviar(4, form.id, body)
     }
 
     suspend fun enviarFormularioCinco(form: FormularioCincoEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar("5", body)
+        return enviar(5, form.id, body)
     }
 
     suspend fun enviarFormularioSeis(form: FormularioSeisEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar("6", body)
+        return enviar(6, form.id, body)
     }
 
     suspend fun enviarFormularioSiete(form: FormularioSieteEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar("7", body)
+        return enviar(7, form.id, body)
     }
 
     // -----------------------
