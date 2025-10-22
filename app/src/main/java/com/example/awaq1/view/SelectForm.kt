@@ -134,6 +134,7 @@ fun FormChooseButton(route: Any, text: String, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth(0.85f)
     ) {
+
         Text(
             text,
             style = MaterialTheme.typography.titleMedium

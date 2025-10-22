@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -231,36 +232,30 @@ fun Home(navController: NavController) {
                             .align(Alignment.CenterHorizontally)
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    //Spacer(modifier = Modifier.height(50.dp))
 
                     Column(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(.6f)
                     ) {
                         CircularDeterminateIndicator(count = count, incompleteCount = incompleteCount)
                     }
 
-                    Spacer(modifier = Modifier.height(80.dp))
+                    Spacer(modifier = Modifier.height(30.dp))
 
                     // Stats Row
+// Stats Row
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                       Spacer(modifier = Modifier.width(50.dp))
-                        Box(modifier = Modifier.padding( start = 50.dp, end = 83.dp, top = 30.dp, bottom = 30.dp)) {
-                            StatsColumn(label = "Total", count = count, color = Color.Gray)
-                        }
-                        Box(modifier = Modifier.padding(start = 20.dp, end = 30.dp, bottom = 30.dp, top = 30.dp)) {
-                            StatsColumn(label = "Incompletos", count = incompleteCount, color = Color.Gray
-                            )
-                        }
-                        Box(modifier = Modifier.padding(  start = 60.dp, end = 60.dp, top = 30.dp, bottom = 30.dp)) {
-                            StatsColumn(label = "Guardados", count = count - incompleteCount, color = Color.Gray
-                            )
-
-                        }
+                        StatsColumn(label = "Total", count = count, color = Color.Gray)
+                        StatsColumn(label = "Incompletos", count = incompleteCount, color = Color.Gray)
+                        StatsColumn(label = "Guardados", count = count - incompleteCount, color = Color.Gray)
                     }
+
                 }
             }
         }
@@ -278,7 +273,7 @@ fun StatsColumn(label: String, count: Int, color: Color) {
         )
         Text(
             text = label,
-            fontSize = 28.sp,
+            fontSize = 12.sp,
             color = color
         )
     }
@@ -294,7 +289,7 @@ fun CircularDeterminateIndicator(count: Int, incompleteCount: Int){
         ) {
         CircularProgressIndicator(
                 progress = { progreso },
-                modifier = Modifier.size(400.dp),
+                modifier = Modifier.aspectRatio(1F),
                 color = Color(0xFF4E7029),
                 strokeWidth = 30.dp,
                 trackColor = Color.LightGray
