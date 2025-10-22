@@ -34,6 +34,6 @@ interface AuthApiService {
     suspend fun sendForm(
         @Path("tenant") tenant: String,
         @Path("formKey") formKey: String,
-        @Body body: FormBody
+        @Body body: FormSubmissionRequest
     ): Response<ApiMessage>
 }

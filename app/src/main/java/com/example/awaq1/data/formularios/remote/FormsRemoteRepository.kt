@@ -8,7 +8,7 @@ import java.io.IOException
 
 class FormsRemoteRepository(
     private val authApiService: AuthApiService,
-    private val registroEnvioRepository: RegistroEnvioRepository   // 👈 NUEVO
+    private val registroEnvioRepository: RegistroEnvioRepository
 ) {
 
     // --- Helper genérico para llamadas Retrofit que devuelven Response<T> y lanzan errores claros
@@ -36,14 +36,19 @@ class FormsRemoteRepository(
         formId: Long,
         body: Map<String, @JvmSuppressWildcards Any?>
     ): Result<Unit> = runCatching {
+        val metadata = mapOf(
+            "app_version" to "1.0.0",
+            "timestamp" to System.currentTimeMillis()
+        )
+        val request = FormSubmissionRequest(data = body, metadata = metadata)
+
         val resp = authApiService.sendForm(
             tenant = "biomo",
             formKey = formType.toString(),
-            body = body
+            body = request
         )
         if (resp.isSuccessful) {
-            // ✅ Solo marcamos como enviado si el código es exactamente 201
-            if (resp.code() == 201) {
+            if (resp.code() == 200) {
                 registroEnvioRepository.markSent(formType, formId)
             }
         } else {
@@ -63,14 +68,14 @@ class FormsRemoteRepository(
         val payload = form.toSubmission(userIdDelToken)
         return enviar(
             formType = 1,
-            formId = form.id,            // 👈 ajusta si tu campo no se llama 'id'
+            formId = form.id,
             body = payload
         )
     }
 
     suspend fun enviarFormularioDos(form: FormularioDosEntity, userIdDelToken: Int?): Result<Unit> {
         val body = form.toSubmission(userIdDelToken)
-        return enviar(2, form.id, body) // 👈 ajusta 'form.id' si es necesario
+        return enviar(2, form.id, body)
     }
 
     suspend fun enviarFormularioTres(form: FormularioTresEntity, userIdDelToken: Int?): Result<Unit> {

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.awaq1.data.formularios.local.TokenManager
 import com.example.awaq1.data.formularios.remote.AuthApiService
 import com.example.awaq1.data.formularios.remote.AuthRequest
-import com.example.awaq1.data.formularios.remote.AuthResponse
 import com.example.awaq1.data.usuario.UsuarioEntity
 import com.example.awaq1.data.usuario.UsuariosRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +29,14 @@ class LoginViewModel(
             try {
                 val cleanEmail = email.trim()
                 val cleanPassword = password_user.trim()
+                val metadata = mapOf(
+                    "app_version" to "1.0.0", // TODO: Inject real app version
+                    "timestamp" to System.currentTimeMillis()
+                )
 
-                val response = authApiService.signIn(AuthRequest(cleanEmail, cleanPassword))
+                val authRequest = AuthRequest(cleanEmail, cleanPassword, metadata)
+
+                val response = authApiService.signIn(authRequest)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody?.token != null && responseBody.user != null) {

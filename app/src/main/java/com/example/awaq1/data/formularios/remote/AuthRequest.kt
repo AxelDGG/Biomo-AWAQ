@@ -7,7 +7,16 @@ import com.google.gson.annotations.SerializedName
  */
 data class AuthRequest(
     @SerializedName("user_email") val email: String,
-    @SerializedName("password") val password: String
+    @SerializedName("password") val password: String,
+    @SerializedName("metadata") val metadata: Map<String, @JvmSuppressWildcards Any>
+)
+
+/**
+ * Representa el cuerpo de la petición para el envío de formularios.
+ */
+data class FormSubmissionRequest(
+    @SerializedName("data") val data: Map<String, @JvmSuppressWildcards Any?>,
+    @SerializedName("metadata") val metadata: Map<String, @JvmSuppressWildcards Any>
 )
 
 /**
