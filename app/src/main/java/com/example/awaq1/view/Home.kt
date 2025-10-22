@@ -251,9 +251,11 @@ fun Home(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Spacer(modifier = Modifier.padding(start = 3.dp))
                         StatsColumn(label = "Total", count = count, color = Color.Gray)
                         StatsColumn(label = "Incompletos", count = incompleteCount, color = Color.Gray)
-                        StatsColumn(label = "Guardados", count = count - incompleteCount, color = Color.Gray)
+                        StatsColumn(label = "Completos", count = count - incompleteCount, color = Color.Gray)
+                        Spacer(modifier = Modifier.padding(end = 3.dp))
                     }
 
                 }
@@ -273,7 +275,7 @@ fun StatsColumn(label: String, count: Int, color: Color) {
         )
         Text(
             text = label,
-            fontSize = 12.sp,
+            fontSize = 18.sp,
             color = color
         )
     }
