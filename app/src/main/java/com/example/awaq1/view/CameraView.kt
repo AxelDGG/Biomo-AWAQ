@@ -56,7 +56,7 @@ fun CameraWindow(
         onResult = { uri ->
             if (uri != null) {
                 savedImageUris.value.add(uri)
-                onClose() // Exit the CameraWindow after importing
+                onClose()
             }
         }
     )
@@ -106,8 +106,8 @@ fun CameraWindow(
                 ) {
                     Button(
                         onClick = {
-                            currentCapturedUri = null // Reset current image
-                            showPreview = false // Return to camera preview
+                            currentCapturedUri = null
+                            showPreview = false
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF4E7029),
@@ -121,10 +121,10 @@ fun CameraWindow(
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            savedImageUris.value.add(uri) // Add image to the list
-                            currentCapturedUri = null // Reset current image
-                            showPreview = false // Return to camera preview
-                            onClose() // Exit the CameraWindow after confirmation
+                            savedImageUris.value.add(uri)
+                            currentCapturedUri = null
+                            showPreview = false
+                            onClose()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF4E7029),
@@ -151,7 +151,7 @@ fun CameraWindow(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     TextButton(
-                        onClick = { galleryLauncher.launch("image/*") } // Launch gallery picker
+                        onClick = { galleryLauncher.launch("image/*") }
                     ) {
                         Text("Galeria", color = Color.White, fontSize = 25.sp)
                     }
@@ -189,7 +189,7 @@ fun CameraWindow(
                     //Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(
-                        onClick = { onClose() }, // Launch gallery picker
+                        onClick = { onClose() },
 
                     ) {
                         Text("Cancelar", color = Color.White, fontSize = 25.sp)

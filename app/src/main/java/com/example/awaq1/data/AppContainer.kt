@@ -65,7 +65,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 
     override val formulariosRemoteRepository: FormsRemoteRepository by lazy {
-        FormsRemoteRepository(apiService, registroEnvioRepository) // 👈 pasa el repo
+        FormsRemoteRepository(apiService, registroEnvioRepository)
     }
 
 }

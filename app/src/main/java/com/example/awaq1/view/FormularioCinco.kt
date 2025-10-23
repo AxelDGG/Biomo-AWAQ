@@ -303,32 +303,31 @@ fun ObservationFormCinco(navController: NavController, formularioId: Long = 0) {
                                         else -> android.R.drawable.ic_menu_gallery
                                     }
 
-                                    // Outer Box for border and padding
                                     Box(
                                         modifier = Modifier
-                                            .padding(8.dp) // Space between items
+                                            .padding(8.dp)
                                             .border(
                                                 width = 2.dp,
-                                                color = if (tipoAnimal == animal) Color(0xFF4E7029) else Color.Transparent, // Green border if selected
-                                                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp) // Rounded corners
+                                                color = if (tipoAnimal == animal) Color(0xFF4E7029) else Color.Transparent,
+                                                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                                             )
-                                            .padding(8.dp) // Padding inside the border
+                                            .padding(8.dp)
                                     ) {
                                         Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally // Center image and label
+                                            horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
                                             // Image with increased size
                                             Image(
                                                 painter = painterResource(id = imageResource),
                                                 contentDescription = animal,
-                                                modifier = Modifier.requiredSize(75.dp) // Larger size for the image
+                                                modifier = Modifier.requiredSize(75.dp)
                                             )
-                                            // Label below the image
+
                                             Text(
                                                 text = animal,
                                                 fontSize = 20.sp,
-                                                color = if (tipoAnimal == animal) Color(0xFF4E7029) else Color(0xFF3F3F3F), // Green if selected
-                                                modifier = Modifier.padding(top = 4.dp) // Space between image and label
+                                                color = if (tipoAnimal == animal) Color(0xFF4E7029) else Color(0xFF3F3F3F),
+                                                modifier = Modifier.padding(top = 4.dp)
                                             )
                                         }
                                     }
@@ -433,7 +432,6 @@ fun ObservationFormCinco(navController: NavController, formularioId: Long = 0) {
 
                         // Log.d("ObservationForm", "savedImageUri: ${savedImageUri.value}")
 
-                        // Display the saved image
                         savedImageUris.value.forEach { uri ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -448,9 +446,9 @@ fun ObservationFormCinco(navController: NavController, formularioId: Long = 0) {
                                     savedImageUris.value = savedImageUris.value.toMutableList().apply { remove(uri) }
                                 },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent // Removes background color
+                                        containerColor = Color.Transparent
                                     ),
-                                    elevation = null // Removes shadow/elevation for a completely flat button
+                                    elevation = null
                                 ) {
                                     Text(text = "X",
                                         color = Color.Red,

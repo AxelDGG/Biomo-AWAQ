@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 @Entity(tableName = "Usuarios")
 data class UsuarioEntity(
     val username: String,
-    val lastAccess: String,  // Assuming datetime as String for simplicity
+    val lastAccess: String,
     val lastLogin: String,
 ) {
     @PrimaryKey(autoGenerate = true)

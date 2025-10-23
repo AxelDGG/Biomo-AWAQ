@@ -159,7 +159,7 @@ fun BottomNavigationBar(navController: NavController) {
             .background(Color(0xFFCDE4B4))
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceAround, // Space items evenly across the row
+            horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
@@ -214,11 +214,11 @@ fun NavigationButton(label: String, icon: androidx.compose.ui.graphics.vector.Im
         IconButton(
             onClick = onClick,
 
-            // Se le agregara un fondo de color blanco si el boton esta activo
+
             modifier = Modifier
-                .size(54.dp) // 1. Aumenta el tamaño total del IconButton
+                .size(54.dp)
                 .then(
-                    if (isActive) { // 2. Aplica el fondo solo si está activo
+                    if (isActive) {
                         Modifier.background(color = Color.White, shape = CircleShape)
                     } else {
                         Modifier
@@ -228,15 +228,15 @@ fun NavigationButton(label: String, icon: androidx.compose.ui.graphics.vector.Im
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                modifier = Modifier.size(48.dp), // 3. Aumenta el tamaño del icono
-                tint = if (isActive) Color(0xFF4CAF50) else Color.Gray // Green when active, gray when inactive
+                modifier = Modifier.size(48.dp),
+                tint = if (isActive) Color(0xFF4CAF50) else Color.Gray
             )
         }
         Text(
             text = label,
             fontSize = 12.sp,
             fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
-            color = if (isActive) Color(0xFF4CAF50) else Color.Gray // Green when active, gray when inactive
+            color = if (isActive) Color(0xFF4CAF50) else Color.Gray
         )
     }
 }

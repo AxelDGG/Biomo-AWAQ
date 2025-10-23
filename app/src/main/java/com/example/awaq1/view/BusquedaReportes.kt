@@ -111,10 +111,10 @@ fun ObservationListScreen(navController: NavController) {
                                     // navController.navigate("formDetail/${formsList.}")
                                 },
                             colors = CardDefaults.cardColors(
-                                containerColor = Color.White  // Color de fondo blanco
+                                containerColor = Color.White
                             ),
                             elevation = CardDefaults.cardElevation(
-                                defaultElevation = 4.dp  // Añade un poco de elevación para mejor contraste
+                                defaultElevation = 4.dp
                             )
                         ) {
                             Column(
@@ -123,7 +123,7 @@ fun ObservationListScreen(navController: NavController) {
                                 Text(
                                     text = "Transecto: ${form.transecto}",
                                     style = MaterialTheme.typography.headlineSmall,
-                                    color = Color.Black  // Texto negro para mejor contraste
+                                    color = Color.Black
                                 )
                                 Text(
                                     text = "Tipo de Animal: ${form.tipoAnimal}",

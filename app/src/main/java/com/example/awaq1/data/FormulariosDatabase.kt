@@ -18,10 +18,9 @@ import com.example.awaq1.data.formularios.local.RegistroEnvioEntity
         UsuarioFormulario1Entity::class, UsuarioFormulario2Entity::class, UsuarioFormulario3Entity::class,
         UsuarioFormulario4Entity::class, UsuarioFormulario5Entity::class, UsuarioFormulario6Entity::class,
         UsuarioFormulario7Entity::class,
-        // 🔹 NUEVA TABLA
         RegistroEnvioEntity::class
     ],
-    version = 7,                       // ⬅️ súbela en +1
+    version = 7,
     exportSchema = true,
     // Mantén los automigrations que ya tenías (opcional si usas fallback)
     autoMigrations = [
@@ -48,7 +47,6 @@ abstract class FormulariosDatabase : RoomDatabase() {
     abstract fun usuarioFormulario6DAO(): UsuarioFormulario6DAO
     abstract fun usuarioFormulario7DAO(): UsuarioFormulario7DAO
 
-    // 🔹 NUEVO DAO
     abstract fun registroEnvioDAO(): RegistroEnvioDAO
 
     companion object {
@@ -61,7 +59,6 @@ abstract class FormulariosDatabase : RoomDatabase() {
                     FormulariosDatabase::class.java,
                     "formularios_database"
                 )
-                    // En debug puedes dejar fallback; en release idealmente migra.
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }

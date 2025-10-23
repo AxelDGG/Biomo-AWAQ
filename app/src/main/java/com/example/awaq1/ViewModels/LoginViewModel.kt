@@ -89,10 +89,10 @@ class LoginViewModel(
             if (userIdStr != null && username != null) {
                 val userId = userIdStr.toLong()
 
-                // 2. Usamos getUserById para verificar si el usuario ya existe
+                // Usamos getUserById para verificar si el usuario ya existe
                 val existingUser = usuariosRepository.getUserById(userId).firstOrNull()
 
-                // 3. Si el usuario no existe (es la primera vez que inicia sesión en este dispositivo)
+                // Si el usuario no existe (es la primera vez que inicia sesión en este dispositivo)
                 if (existingUser == null) {
                     Log.d("LoginViewModel", "El usuario con ID $userId no existe localmente. Creándolo...")
 
@@ -105,11 +105,10 @@ class LoginViewModel(
                         id = userId
                     }
 
-                    // 4. Usamos insertUser para guardarlo en la base de datos local
+                    // Usamos insertUser para guardarlo en la base de datos local
                     usuariosRepository.insertUser(newUser)
                 } else {
                     Log.d("LoginViewModel", "El usuario con ID $userId ya existe localmente.")
-                    // Opcional: puedes actualizar su fecha de último login si quieres
                     usuariosRepository.updateLastLogin(userId, LocalDateTime.now().toString())
                 }
             }
